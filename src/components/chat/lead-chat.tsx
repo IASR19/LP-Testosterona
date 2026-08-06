@@ -2,17 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useCampaign } from "@/components/campaign/campaign-provider";
 import { ChatBubble } from "@/components/chat/chat-bubble";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChoiceButtons } from "@/components/chat/choice-buttons";
 import { EbookFinalScreen } from "@/components/final/ebook-final-screen";
 import {
   getStepById,
-  initialAnswers,
   resolveMessages,
   resolveNextStep,
   type LeadAnswers,
-} from "@/content/chat-flow";
+} from "@/content/types";
 import { formatBrazilianPhone } from "@/lib/form/formatters";
 
 type VisibleMessage = {
@@ -26,6 +26,7 @@ const AUTO_ADVANCE_MS = 1600;
 const FIRST_MESSAGE_DELAY_MS = 500;
 
 export function LeadChat() {
+  const { chatSteps, initialAnswers } = useCampaign();
   const [answers, setAnswers] = useState<LeadAnswers>(initialAnswers);
   const [stepId, setStepId] = useState("intro");
   const [messages, setMessages] = useState<VisibleMessage[]>([]);
@@ -40,7 +41,7 @@ export function LeadChat() {
   const revealedStepsRef = useRef(new Set<string>());
   const answersRef = useRef(answers);
 
-  const step = getStepById(stepId);
+  const step = getStepById(chatSteps, stepId);
 
   const nextMessageId = useCallback(() => {
     messageSeqRef.current += 1;
@@ -70,7 +71,6 @@ export function LeadChat() {
       }
     };
 
-    // Espera o layout do novo balão/input (animação + paint)
     requestAnimationFrame(() => {
       requestAnimationFrame(run);
     });
@@ -78,12 +78,10 @@ export function LeadChat() {
 
   useEffect(() => {
     scrollToBottom(true);
-    // Recalcula depois da animação de entrada do balão (~350ms)
     const id = window.setTimeout(() => scrollToBottom(true), 380);
     return () => window.clearTimeout(id);
   }, [messages, revealing, error, scrollToBottom]);
 
-  // Quando o input/choices aparecem após o reveal
   useEffect(() => {
     if (revealing) return;
     const id = window.setTimeout(() => scrollToBottom(true), 100);
@@ -100,7 +98,6 @@ export function LeadChat() {
   useEffect(() => {
     if (!step || finished) return;
 
-    // Evita re-revelar o mesmo passo (Strict Mode remonta o effect)
     if (revealedStepsRef.current.has(step.id)) {
       const inputVisible = window.setTimeout(() => setRevealing(false), 0);
       return () => window.clearTimeout(inputVisible);
@@ -157,7 +154,6 @@ export function LeadChat() {
     return () => {
       cancelled = true;
       timeouts.forEach((id) => window.clearTimeout(id));
-      // Só remove balões se o passo não chegou a completar (ex.: remount Strict Mode)
       if (!stepCompleted && addedIds.length > 0) {
         const abortIds = new Set(addedIds);
         setMessages((prev) =>

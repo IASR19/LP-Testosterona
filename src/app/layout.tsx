@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
-import { siteMeta } from "@/content/lead-magnet";
-
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -13,9 +11,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: siteMeta.title,
-  description: siteMeta.description,
   metadataBase: new URL("https://link-page.grapeclinic.com.br"),
+  title: "Grape Clinic",
+  description: "Landing pages de captação da Grape Clinic.",
   robots: {
     index: true,
     follow: true,
@@ -24,9 +22,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "Grape Clinic",
-    title: siteMeta.title,
-    description: siteMeta.description,
-    url: "/testosterona",
   },
 };
 

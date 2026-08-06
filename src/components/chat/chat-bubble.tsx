@@ -2,8 +2,7 @@
 
 import { motion } from "motion/react";
 
-import { leadMagnetConfig } from "@/content/lead-magnet";
-import { withBasePath } from "@/lib/base-path";
+import { useCampaign } from "@/components/campaign/campaign-provider";
 import { cn } from "@/lib/utils";
 
 type ChatBubbleProps = {
@@ -12,6 +11,7 @@ type ChatBubbleProps = {
 };
 
 export function ChatBubble({ text, from = "bot" }: ChatBubbleProps) {
+  const { config } = useCampaign();
   const isBot = from === "bot";
 
   return (
@@ -27,11 +27,12 @@ export function ChatBubble({ text, from = "bot" }: ChatBubbleProps) {
       {isBot ? (
         <span className="mb-0.5 inline-flex size-8 shrink-0 overflow-hidden rounded-full bg-[#e8e0d4] ring-1 ring-[#e4e4e4]">
           <img
-            src={withBasePath(leadMagnetConfig.avatarSrc)}
-            alt={leadMagnetConfig.doctorName}
+            src={config.avatarSrc}
+            alt={config.doctorName}
             width={32}
             height={32}
-            className="size-8 object-cover object-[center_12%]"
+            className="size-8 object-cover"
+            style={{ objectPosition: config.avatarObjectPosition }}
             decoding="async"
           />
         </span>

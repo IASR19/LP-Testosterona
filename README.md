@@ -1,8 +1,12 @@
-# LP Testosterona — Grape Clinic
+# Link Pages — Grape Clinic
 
-Landing page de lead magnet (chatbot + tela final do ebook) da Grape Clinic — campanha de testosterona masculina.
+App unificado com as landing pages de lead magnet:
 
-Espelho estrutural da [LP-Endometriose](../LP-Endometriose).
+- `/endometriose`
+- `/testosterona`
+- `/` → redireciona para `https://www.grapeclinic.com.br/`
+
+Domínio alvo: `https://link-page.grapeclinic.com.br`
 
 ## Stack
 
@@ -18,12 +22,19 @@ npm install
 npm run dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000).
+Abra:
 
-## Configuração
+- [http://localhost:3000/endometriose](http://localhost:3000/endometriose)
+- [http://localhost:3000/testosterona](http://localhost:3000/testosterona)
 
-Links do ebook e do grupo WhatsApp ficam em `src/content/lead-magnet.ts`.  
-Roteiro do chat em `src/content/chat-flow.ts` (baseado no export Typebot).
+## Conteúdo por campanha
+
+| Campanha | Config | Chat |
+|----------|--------|------|
+| Endometriose | `src/content/endometriose/` | `chat-flow.ts` |
+| Testosterona | `src/content/testosterona/` | `chat-flow.ts` |
+
+Assets em `public/images/<campanha>/`.
 
 ## Scripts
 
@@ -33,4 +44,12 @@ npm run build
 npm run start
 npm run lint
 npm run typecheck
+npm run optimize:final-screen -- endometriose
+npm run optimize:final-screen -- testosterona
 ```
+
+## Deploy (Vercel)
+
+1. Root Directory: pasta deste app (`LP-Testosterona` ou o nome que usar no repo).
+2. Domínio customizado: `link-page.grapeclinic.com.br`
+3. DNS: CNAME `link-page` → `cname.vercel-dns.com`

@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 
-import type { ChoiceOption } from "@/content/chat-flow";
+import type { ChoiceOption } from "@/content/types";
 
 type ChoiceButtonsProps = {
   choices: ChoiceOption[];

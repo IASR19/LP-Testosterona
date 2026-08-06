@@ -1,12 +1,6 @@
 import type { NextConfig } from "next";
 
-const basePath = "/testosterona";
-
 const nextConfig: NextConfig = {
-  basePath,
-  env: {
-    NEXT_PUBLIC_BASE_PATH: basePath,
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
@@ -17,11 +11,9 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        // Fora do basePath: captura a raiz do domínio, não /testosterona
         source: "/",
         destination: "https://www.grapeclinic.com.br/",
         permanent: false,
-        basePath: false,
       },
     ];
   },

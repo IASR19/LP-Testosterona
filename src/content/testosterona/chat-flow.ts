@@ -5,48 +5,7 @@ import {
   isValidEmail,
   normalizeSpaces,
 } from "@/lib/form/formatters";
-
-export type LeadAnswers = {
-  name: string;
-  phone: string;
-  email: string;
-  profession: string;
-  diagnosis: string;
-  symptom: string;
-  wantsConsultation: string;
-};
-
-export type ChoiceOption = {
-  label: string;
-  value: string;
-};
-
-export type InputKind = "text" | "phone" | "email" | "choice";
-
-export type ChatStep = {
-  id: string;
-  messages: string[] | ((answers: LeadAnswers) => string[]);
-  input?: {
-    kind: InputKind;
-    field: keyof LeadAnswers;
-    placeholder?: string;
-    choices?: ChoiceOption[];
-    transform?: (value: string) => string;
-    validate?: (value: string) => string | null;
-  };
-  next?: string | ((answers: LeadAnswers) => string);
-  autoAdvance?: boolean;
-};
-
-export const initialAnswers: LeadAnswers = {
-  name: "",
-  phone: "",
-  email: "",
-  profession: "",
-  diagnosis: "",
-  symptom: "",
-  wantsConsultation: "",
-};
+import type { ChatStep } from "@/content/types";
 
 export const chatSteps: ChatStep[] = [
   {
@@ -190,24 +149,3 @@ export const chatSteps: ChatStep[] = [
     autoAdvance: true,
   },
 ];
-
-export function getStepById(id: string) {
-  return chatSteps.find((step) => step.id === id);
-}
-
-export function resolveMessages(
-  step: ChatStep,
-  answers: LeadAnswers,
-): string[] {
-  return typeof step.messages === "function"
-    ? step.messages(answers)
-    : step.messages;
-}
-
-export function resolveNextStep(
-  step: ChatStep,
-  answers: LeadAnswers,
-): string | null {
-  if (!step.next) return null;
-  return typeof step.next === "function" ? step.next(answers) : step.next;
-}
