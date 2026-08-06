@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "optimize:final-screen": "node scripts/optimize-final-screen.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",

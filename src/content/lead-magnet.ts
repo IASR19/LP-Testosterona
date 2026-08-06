@@ -11,7 +11,9 @@ export const leadMagnetConfig = {
     "https://chat.whatsapp.com/BDjX9xhQObZ8Au6fxnWjnN?s=cl&p=a&ilr=0",
   redirectDelayMs: 1200,
   avatarSrc: "/images/chat-avatar.png",
-  finalScreenSrc: "/images/final-screen.png",
+  finalScreenSrc: "/images/final-screen.webp",
+  finalScreenWidth: 1290,
+  finalScreenHeight: 2293,
 } as const;
 
 export const siteMeta = {

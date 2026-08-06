@@ -37,14 +37,15 @@ export function EbookFinalScreen({ className }: EbookFinalScreenProps) {
         <Image
           src={leadMagnetConfig.finalScreenSrc}
           alt="Clique no botão para baixar o ebook gratuito sobre testosterona"
-          width={1080}
-          height={1920}
+          width={leadMagnetConfig.finalScreenWidth}
+          height={leadMagnetConfig.finalScreenHeight}
+          quality={95}
           priority
+          sizes="(max-width: 448px) 100vw, 448px"
           draggable={false}
           className="pointer-events-none h-auto w-full select-none"
         />
 
-        {/* Ao lado esquerdo da capa (tablet), sem cobrir o ebook */}
         <button
           type="button"
           onClick={handleDownload}
