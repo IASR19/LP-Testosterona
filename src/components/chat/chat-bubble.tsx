@@ -40,9 +40,9 @@ export function ChatBubble({ text, from = "bot" }: ChatBubbleProps) {
 
       <div
         className={cn(
-          "rounded-md border px-3.5 py-2.5 text-[15px] leading-snug",
+          "rounded-md border px-3.5 py-2.5 text-[15px] leading-snug shadow-sm",
           isBot
-            ? "border-[#e4e4e4] bg-white text-[#1a1a1a]"
+            ? "border-[#e4e4e4]/90 bg-white/95 text-[#1a1a1a] backdrop-blur-[2px]"
             : "border-transparent bg-[#f05a28] text-white",
         )}
       >

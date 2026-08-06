@@ -14,6 +14,7 @@ export const leadMagnetConfig: LeadMagnetConfig = {
   redirectDelayMs: 1200,
   avatarSrc: "/images/testosterona/chat-avatar.png",
   avatarObjectPosition: "center 12%",
+  chatBackgroundSrc: "/images/testosterona/chat-bg.webp",
   finalScreenSrc: "/images/testosterona/final-screen.webp",
   finalScreenWidth: 1290,
   finalScreenHeight: 2293,

@@ -11,7 +11,7 @@ export const chatSteps: ChatStep[] = [
   {
     id: "intro",
     messages: [
-      "Olá. Tudo bem?",
+      "Olá. Tudo bem com você?",
       'Você está a um passo de baixar o e-book "Testosterona: entenda, previna e retome o controle", direto ao ponto, sem enrolação.',
       "Preciso só de algumas informações rápidas pra liberar o material agora.",
       "Qual é o seu nome?",
@@ -23,53 +23,6 @@ export const chatSteps: ChatStep[] = [
       transform: formatPersonName,
       validate: (value) =>
         normalizeSpaces(value) ? null : "Informe seu primeiro nome.",
-    },
-    next: "phone",
-  },
-  {
-    id: "phone",
-    messages: (answers) => [
-      `Prazer, ${answers.name}. Agora me diz seu whatsapp com DDD, por favor.`,
-    ],
-    input: {
-      kind: "phone",
-      field: "phone",
-      placeholder: "Digite o seu telefone com DDD",
-      transform: formatBrazilianPhone,
-      validate: (value) =>
-        isValidBrazilianPhone(value)
-          ? null
-          : "Esse número não parece estar completo. Digite seu telefone com DDD (ex.: 11987654321).",
-    },
-    next: "email",
-  },
-  {
-    id: "email",
-    messages: (answers) => [
-      `${answers.name}. Muito obrigado! Agora me informa o seu melhor e-mail?`,
-    ],
-    input: {
-      kind: "email",
-      field: "email",
-      placeholder: "Digite o seu e-mail",
-      transform: (value) => normalizeSpaces(value).toLowerCase(),
-      validate: (value) =>
-        isValidEmail(value)
-          ? null
-          : "Acho que faltou alguma coisa nesse e-mail. Pode conferir e mandar de novo?",
-    },
-    next: "profession",
-  },
-  {
-    id: "profession",
-    messages: ["Perfeito! Última pergunta: qual é a sua profissão?"],
-    input: {
-      kind: "text",
-      field: "profession",
-      placeholder: "Digite a sua profissão",
-      transform: normalizeSpaces,
-      validate: (value) =>
-        normalizeSpaces(value) ? null : "Informe a sua profissão.",
     },
     next: "diagnosis",
   },
@@ -130,6 +83,53 @@ export const chatSteps: ChatStep[] = [
         { label: "Sim", value: "Sim" },
         { label: "Não neste momento", value: "Não neste momento" },
       ],
+    },
+    next: "phone",
+  },
+  {
+    id: "phone",
+    messages: (answers) => [
+      `${answers.name}. Agora me diz seu whatsapp com DDD, por favor.`,
+    ],
+    input: {
+      kind: "phone",
+      field: "phone",
+      placeholder: "Digite o seu telefone com DDD",
+      transform: formatBrazilianPhone,
+      validate: (value) =>
+        isValidBrazilianPhone(value)
+          ? null
+          : "Esse número não parece estar completo. Digite seu telefone com DDD (ex.: 11987654321).",
+    },
+    next: "email",
+  },
+  {
+    id: "email",
+    messages: (answers) => [
+      `${answers.name}. Muito obrigado! Agora me informa o seu melhor e-mail?`,
+    ],
+    input: {
+      kind: "email",
+      field: "email",
+      placeholder: "Digite o seu e-mail",
+      transform: (value) => normalizeSpaces(value).toLowerCase(),
+      validate: (value) =>
+        isValidEmail(value)
+          ? null
+          : "Acho que faltou alguma coisa nesse e-mail. Pode conferir e mandar de novo?",
+    },
+    next: "profession",
+  },
+  {
+    id: "profession",
+    messages: ["Perfeito! Última pergunta: qual é a sua profissão?"],
+    input: {
+      kind: "text",
+      field: "profession",
+      placeholder: "Digite a sua profissão",
+      transform: normalizeSpaces,
+      validate: (value) =>
+        normalizeSpaces(value) ? null : "Informe a sua profissão.",
     },
     next: (answers) =>
       answers.wantsConsultation === "Sim" ? "closing-yes" : "closing-no",

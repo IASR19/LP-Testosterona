@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useCampaign } from "@/components/campaign/campaign-provider";
@@ -26,7 +27,7 @@ const AUTO_ADVANCE_MS = 1600;
 const FIRST_MESSAGE_DELAY_MS = 500;
 
 export function LeadChat() {
-  const { chatSteps, initialAnswers } = useCampaign();
+  const { config, chatSteps, initialAnswers } = useCampaign();
   const [answers, setAnswers] = useState<LeadAnswers>(initialAnswers);
   const [stepId, setStepId] = useState("intro");
   const [messages, setMessages] = useState<VisibleMessage[]>([]);
@@ -228,10 +229,23 @@ export function LeadChat() {
         : "text";
 
   return (
-    <div className="mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[#f3f3f3]">
+    <div className="relative mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[#1a1512]">
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <Image
+          src={config.chatBackgroundSrc}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 448px) 100vw, 448px"
+          className="object-cover object-center scale-110 blur-[2.5px]"
+        />
+        <div className="absolute inset-0 bg-[#1a1512]/62" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1512]/35 via-transparent to-[#1a1512]/75" />
+      </div>
+
       <div
         ref={scrollRef}
-        className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain px-4 pb-8 pt-8"
+        className="relative z-10 flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain px-4 pb-8 pt-8"
       >
         {messages.map((message) => (
           <ChatBubble

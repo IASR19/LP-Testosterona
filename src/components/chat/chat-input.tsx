@@ -59,7 +59,7 @@ export function ChatInput({
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
           className={cn(
-            "h-11 min-w-0 flex-1 rounded-md border border-[#e4e4e4] bg-white px-3.5 text-[15px] text-[#1a1a1a] outline-none placeholder:text-[#b0b0b0]",
+            "h-11 min-w-0 flex-1 rounded-md border border-[#e4e4e4]/90 bg-white/95 px-3.5 text-[15px] text-[#1a1a1a] shadow-sm outline-none backdrop-blur-[2px] placeholder:text-[#b0b0b0]",
             "focus:border-[#cfcfcf]",
             "disabled:opacity-60",
           )}
@@ -77,7 +77,9 @@ export function ChatInput({
         </button>
       </form>
       {error ? (
-        <p className="mt-2 text-sm leading-snug text-[#b45309]">{error}</p>
+        <p className="mt-2 rounded-md bg-[#1a1512]/70 px-2 py-1 text-sm leading-snug text-[#fbbf24]">
+          {error}
+        </p>
       ) : null}
     </div>
   );

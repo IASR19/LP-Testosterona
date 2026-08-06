@@ -28,7 +28,7 @@ export function ChoiceButtons({
           type="button"
           disabled={disabled}
           onClick={() => onSelect(choice.value)}
-          className="rounded-md border border-[#e4e4e4] bg-white px-3.5 py-2.5 text-left text-[15px] leading-snug text-[#1a1a1a] transition-colors hover:border-[#d0d0d0] hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-[#e4e4e4]/90 bg-white/95 px-3.5 py-2.5 text-left text-[15px] leading-snug text-[#1a1a1a] shadow-sm backdrop-blur-[2px] transition-colors hover:border-[#d0d0d0] hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
         >
           {choice.label}
         </button>

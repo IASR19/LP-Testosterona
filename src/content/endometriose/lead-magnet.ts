@@ -14,6 +14,7 @@ export const leadMagnetConfig: LeadMagnetConfig = {
   redirectDelayMs: 1200,
   avatarSrc: "/images/endometriose/chat-avatar.png",
   avatarObjectPosition: "center 18%",
+  chatBackgroundSrc: "/images/endometriose/chat-bg.webp",
   finalScreenSrc: "/images/endometriose/final-screen.webp",
   finalScreenWidth: 1290,
   finalScreenHeight: 2293,

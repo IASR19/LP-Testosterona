@@ -41,6 +41,7 @@ export type LeadMagnetConfig = {
   redirectDelayMs: number;
   avatarSrc: string;
   avatarObjectPosition: string;
+  chatBackgroundSrc: string;
   finalScreenSrc: string;
   finalScreenWidth: number;
   finalScreenHeight: number;
