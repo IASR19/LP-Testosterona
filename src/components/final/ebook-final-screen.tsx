@@ -1,19 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCampaign } from "@/components/campaign/campaign-provider";
+import type { LeadAnswers } from "@/content/types";
 import { downloadThenRedirect } from "@/lib/download";
+import { submitLead } from "@/lib/submit-lead";
 import { cn } from "@/lib/utils";
 
 type EbookFinalScreenProps = {
+  answers: LeadAnswers;
   className?: string;
 };
 
-export function EbookFinalScreen({ className }: EbookFinalScreenProps) {
-  const { config } = useCampaign();
+export function EbookFinalScreen({ answers, className }: EbookFinalScreenProps) {
+  const { slug, config } = useCampaign();
   const [busy, setBusy] = useState(false);
+  const leadSubmittedRef = useRef(false);
+
+  useEffect(() => {
+    if (leadSubmittedRef.current) return;
+    leadSubmittedRef.current = true;
+
+    void submitLead(slug, answers).catch((error) => {
+      console.error("[ebook-final-screen] Falha ao enviar lead:", error);
+    });
+  }, [slug, answers]);
 
   function handleDownload() {
     if (busy) return;

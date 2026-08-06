@@ -208,7 +208,7 @@ export function LeadChat() {
   }
 
   if (finished) {
-    return <EbookFinalScreen />;
+    return <EbookFinalScreen answers={answers} />;
   }
 
   const showInput =

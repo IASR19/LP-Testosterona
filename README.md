@@ -48,8 +48,24 @@ npm run optimize:final-screen -- endometriose
 npm run optimize:final-screen -- testosterona
 ```
 
+## Integração GrapeGest
+
+Ao finalizar o chat, o lead é enviado para o webhook do GrapeGest:
+
+- `/testosterona` → `source: lp-testosterona`
+- `/endometriose` → `source: lp-endometriose`
+
+Configure o token em `.env.local` (veja `.env.example`):
+
+```bash
+GRAPEGEST_TOKEN=seu_token_aqui
+```
+
+Na Vercel, adicione a mesma variável de ambiente.
+
 ## Deploy (Vercel)
 
 1. Root Directory: pasta deste app (`LP-Testosterona` ou o nome que usar no repo).
 2. Domínio customizado: `link-page.grapeclinic.com.br`
 3. DNS: CNAME `link-page` → `cname.vercel-dns.com`
+4. Env: `GRAPEGEST_TOKEN`
