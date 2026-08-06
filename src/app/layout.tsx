@@ -15,6 +15,7 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: siteMeta.title,
   description: siteMeta.description,
+  metadataBase: new URL("https://link-page.grapeclinic.com.br"),
   robots: {
     index: true,
     follow: true,
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     siteName: "Grape Clinic",
     title: siteMeta.title,
     description: siteMeta.description,
+    url: "/testosterona",
   },
 };
 
