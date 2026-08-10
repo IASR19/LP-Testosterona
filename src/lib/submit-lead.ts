@@ -43,6 +43,7 @@ export async function submitLead(
       wantsConsultation: answers.wantsConsultation,
       ...readUtmsFromUrl(),
     }),
+    keepalive: true,
   });
 
   if (!response.ok) {

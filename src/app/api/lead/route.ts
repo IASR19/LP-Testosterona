@@ -45,6 +45,10 @@ function isCampaignSlug(value: unknown): value is CampaignSlug {
   return value === "testosterona" || value === "endometriose";
 }
 
+function digitsOnly(value: string) {
+  return value.replace(/\D/g, "");
+}
+
 function validatePayload(payload: LeadPayload) {
   const missing: string[] = [];
 
@@ -99,10 +103,11 @@ export async function POST(request: Request) {
   }
 
   const campaign = payload.campaign as CampaignSlug;
+  const phone = digitsOnly((payload.phone as string).trim());
 
   const grapegestPayload: Record<string, string> = {
     name: (payload.name as string).trim(),
-    phone: (payload.phone as string).trim(),
+    phone,
     email: (payload.email as string).trim(),
     source: CAMPAIGN_SOURCES[campaign],
   };
@@ -162,7 +167,22 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ message: "Lead recebido com sucesso." });
+    const result = (await response.json().catch(() => null)) as {
+      success?: boolean;
+      duplicate?: boolean;
+      leadId?: string;
+    } | null;
+
+    console.info("[lead] GrapeGest ok", {
+      source: grapegestPayload.source,
+      leadId: result?.leadId,
+      duplicate: result?.duplicate ?? false,
+    });
+
+    return NextResponse.json({
+      message: "Lead recebido com sucesso.",
+      duplicate: result?.duplicate ?? false,
+    });
   } catch (error) {
     console.error("[lead] Erro ao contatar GrapeGest:", error);
     return NextResponse.json(
