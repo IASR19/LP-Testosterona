@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
+import { MetaPixel } from "@/components/seo/meta-pixel";
+
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -35,7 +37,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${montserrat.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-full font-sans">
+        <MetaPixel />
+        {children}
+      </body>
     </html>
   );
 }

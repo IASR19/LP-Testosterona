@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { useCampaign } from "@/components/campaign/campaign-provider";
+import { trackMetaLead } from "@/components/seo/meta-pixel";
 import type { LeadAnswers } from "@/content/types";
 import { downloadThenRedirect } from "@/lib/download";
 import { submitLead } from "@/lib/submit-lead";
@@ -23,9 +24,13 @@ export function EbookFinalScreen({ answers, className }: EbookFinalScreenProps) 
     if (leadSubmittedRef.current) return;
     leadSubmittedRef.current = true;
 
-    void submitLead(slug, answers).catch((error) => {
-      console.error("[ebook-final-screen] Falha ao enviar lead:", error);
-    });
+    void submitLead(slug, answers)
+      .then(() => {
+        trackMetaLead();
+      })
+      .catch((error) => {
+        console.error("[ebook-final-screen] Falha ao enviar lead:", error);
+      });
   }, [slug, answers]);
 
   function handleDownload() {
