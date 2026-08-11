@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
         source: "/images/:path*",
         headers: [{ key: "Cache-Control", value: immutable }],
       },
+      {
+        source: "/videos/:path*",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
+      {
+        source: "/brand/:path*",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
     ];
   },
 };

@@ -27,6 +27,23 @@ body {
   font-family: var(--font-montserrat), system-ui, sans-serif;
 }
 
+/* Tokens locais da LP /apresentacao (não afetam chat das outras campanhas) */
+.apresentacao-lp {
+  --ap-cream: #f7f3ec;
+  --ap-cream-2: #efe8dc;
+  --ap-ink: #241a16;
+  --ap-muted: #6a5b52;
+  --ap-primary: #5c4638;
+  --ap-gold: #b98b4e;
+  --ap-gold-light: #d9bd8c;
+  --ap-line: rgba(92, 70, 56, 0.16);
+  color-scheme: light;
+}
+
+.apresentacao-lp a {
+  text-decoration: none;
+}
+
 @keyframes cta-pulse {
   0%,
   100% {
