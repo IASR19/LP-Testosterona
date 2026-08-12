@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 
 import { EvaluationForm } from "@/components/apresentacao/evaluation-form";
 import { PresentationVideo } from "@/components/apresentacao/presentation-video";
+import { VerticalClip } from "@/components/apresentacao/vertical-clip";
 import { apresentacaoContent } from "@/content/apresentacao";
 import { cn } from "@/lib/utils";
 
@@ -170,6 +171,24 @@ export function ApresentacaoLanding() {
             </p>
             <div className="mt-8">
               <EvaluationForm />
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[color:var(--ap-cream)] py-12 sm:py-16">
+          <div className="mx-auto max-w-3xl px-5 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>{content.testimonialEyebrow}</Eyebrow>
+              <h2 className="mt-3 text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
+                {content.testimonialTitle}
+              </h2>
+            </div>
+            <div className="mt-8">
+              <VerticalClip
+                src={content.testimonialSrc}
+                poster={content.testimonialPoster}
+                ariaLabel={`Depoimento em vídeo de ${content.testimonialTitle}`}
+              />
             </div>
           </div>
         </section>

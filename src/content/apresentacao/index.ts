@@ -35,6 +35,10 @@ export const apresentacaoContent = {
   formTitle: "Agendar minha avaliação",
   formSub:
     "Fale com a nossa equipe e descubra o que está por trás do que você sente.",
+  testimonialEyebrow: "Depoimento em vídeo",
+  testimonialTitle: "Junior e Letícia",
+  testimonialSrc: "/videos/depoimento-junior-leticia.mp4",
+  testimonialPoster: "/videos/depoimento-junior-leticia-poster.jpg",
   faqEyebrow: "Dúvidas rápidas",
   faq: [
     {
