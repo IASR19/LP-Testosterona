@@ -38,6 +38,22 @@ export function formatPersonName(value: string) {
   );
 }
 
+export function formatCityName(value: string) {
+  const normalized = normalizeSpaces(value);
+  if (!normalized) return "";
+
+  const lowercaseWords = new Set(["de", "da", "do", "das", "dos", "e"]);
+
+  return normalized
+    .split(" ")
+    .map((word, index) => {
+      const lower = word.toLowerCase();
+      if (index > 0 && lowercaseWords.has(lower)) return lower;
+      return lower.replace(/^[\p{L}\p{M}]/u, (letter) => letter.toUpperCase());
+    })
+    .join(" ");
+}
+
 export function isValidEmail(value: string) {
   const email = normalizeSpaces(value);
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
