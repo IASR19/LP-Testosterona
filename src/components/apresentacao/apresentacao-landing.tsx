@@ -218,7 +218,7 @@ export function ApresentacaoLanding() {
         </section>
       </main>
 
-      <footer className="ap-pattern-on-dark bg-[color:var(--ap-ink)] px-5 py-10 text-[color:var(--ap-cream)] sm:px-6">
+      <footer className="bg-[color:var(--ap-ink)] px-5 py-10 text-[color:var(--ap-cream)] sm:px-6">
         <div className="mx-auto max-w-5xl">
           <Image
             src="/brand/grapeclinic-logo-light.svg"
