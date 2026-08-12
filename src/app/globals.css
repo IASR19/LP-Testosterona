@@ -37,11 +37,62 @@ body {
   --ap-gold: #b98b4e;
   --ap-gold-light: #d9bd8c;
   --ap-line: rgba(97, 77, 58, 0.16);
+  --ap-pattern: url("/brand/pattern-elos.jpg");
+  position: relative;
+  isolation: isolate;
   color-scheme: light;
+}
+
+.apresentacao-lp::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--ap-pattern);
+  background-size: 380px;
+  background-repeat: repeat;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+.apresentacao-lp > * {
+  position: relative;
+  z-index: 1;
 }
 
 .apresentacao-lp a {
   text-decoration: none;
+}
+
+/* Faixas escuras (formulário / rodapé): pattern claro no marrom */
+.apresentacao-lp .ap-pattern-on-dark {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.apresentacao-lp .ap-pattern-on-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--ap-pattern);
+  background-size: 380px;
+  background-repeat: repeat;
+  opacity: 0.11;
+  mix-blend-mode: screen;
+}
+
+.apresentacao-lp .ap-pattern-on-dark > *:not(.ap-mark) {
+  position: relative;
+  z-index: 1;
+}
+
+.apresentacao-lp .ap-mark {
+  pointer-events: none;
+  user-select: none;
 }
 
 @keyframes cta-pulse {

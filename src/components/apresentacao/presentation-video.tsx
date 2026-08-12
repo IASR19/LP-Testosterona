@@ -70,7 +70,7 @@ export function PresentationVideo() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[360px] lg:max-w-[400px]">
+    <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:ml-auto lg:max-w-[380px]">
       <div className="relative overflow-hidden rounded-2xl bg-[color:var(--ap-cream)] shadow-[0_24px_60px_-28px_rgba(36,26,22,0.45)] ring-1 ring-black/10">
         <div className="relative aspect-[9/16] w-full">
           <video

@@ -106,13 +106,13 @@ export function ApresentacaoLanding() {
       </header>
 
       <main id="topo">
-        <section className="mx-auto grid max-w-5xl gap-8 px-5 pb-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:pb-16">
-          <div>
+        <section className="mx-auto grid max-w-5xl gap-6 px-5 pb-6 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-start lg:gap-12 lg:pb-8">
+          <div className="min-w-0 lg:pt-1">
             <Eyebrow>{content.eyebrow}</Eyebrow>
-            <h1 className="mt-4 max-w-xl text-balance text-[clamp(1.75rem,4.6vw,2.85rem)] font-medium leading-[1.14] tracking-[-0.02em] text-[color:var(--ap-primary)]">
+            <h1 className="mt-3 text-balance text-[clamp(1.75rem,4.6vw,2.85rem)] font-medium leading-[1.14] tracking-[-0.02em] text-[color:var(--ap-primary)]">
               {content.heroTitle}
             </h1>
-            <p className="mt-4 max-w-lg text-[15px] leading-7 text-[color:var(--ap-muted)] sm:text-base">
+            <p className="mt-4 text-[15px] leading-7 text-[color:var(--ap-muted)] sm:text-base">
               {content.heroSub}
             </p>
             <div className="mt-6">
@@ -128,62 +128,70 @@ export function ApresentacaoLanding() {
           <PresentationVideo />
         </section>
 
-        <section className="border-y border-[color:var(--ap-line)] bg-white/70 py-12 sm:py-14">
-          <div className="mx-auto max-w-3xl px-5 sm:px-6">
-            <Eyebrow>{content.painEyebrow}</Eyebrow>
-            <h2 className="mt-3 max-w-2xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
-              {content.painTitle}
-            </h2>
-            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[color:var(--ap-muted)]">
-              {content.painBody}
-            </p>
-          </div>
-        </section>
-
-        <section className="bg-[color:var(--ap-cream-2)] py-12 sm:py-14">
-          <div className="mx-auto max-w-3xl px-5 sm:px-6">
-            <Eyebrow>{content.solutionEyebrow}</Eyebrow>
-            <h2 className="mt-3 max-w-2xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
-              {content.solutionTitle}
-            </h2>
-            <div className="mt-4 max-w-2xl space-y-4 text-[15px] leading-7 text-[color:var(--ap-muted)]">
-              {content.solutionBody.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+        <section className="py-6 sm:py-7">
+          <div className="mx-auto max-w-5xl space-y-6 px-5 sm:space-y-7 sm:px-6">
+            <div>
+              <Eyebrow>{content.painEyebrow}</Eyebrow>
+              <h2 className="mt-2 text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
+                {content.painTitle}
+              </h2>
+              <p className="mt-3 text-[15px] leading-7 text-[color:var(--ap-muted)]">
+                {content.painBody}
+              </p>
             </div>
-            <p className="mt-8 text-lg font-medium tracking-[-0.01em] text-[color:var(--ap-primary)] sm:text-xl">
-              {content.solutionTagline}
-            </p>
+
+            <div className="relative border-t border-[color:var(--ap-line)] pt-6 sm:pt-7">
+              <Image
+                src="/brand/grapeclinic-grape-mark.svg"
+                alt=""
+                width={200}
+                height={200}
+                className="ap-mark pointer-events-none absolute -right-2 bottom-0 hidden opacity-[0.06] sm:block"
+                aria-hidden
+              />
+              <Eyebrow>{content.solutionEyebrow}</Eyebrow>
+              <h2 className="mt-2 text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
+                {content.solutionTitle}
+              </h2>
+              <div className="mt-3 space-y-3 text-[15px] leading-7 text-[color:var(--ap-muted)]">
+                {content.solutionBody.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-5 text-lg font-medium tracking-[-0.01em] text-[color:var(--ap-primary)] sm:text-xl">
+                {content.solutionTagline}
+              </p>
+            </div>
           </div>
         </section>
 
         <section
           id={content.formAnchor}
-          className="scroll-mt-6 bg-[color:var(--ap-primary)] py-12 text-white sm:py-16"
+          className="ap-pattern-on-dark scroll-mt-6 bg-[color:var(--ap-primary)] py-8 text-white sm:py-10"
         >
-          <div className="mx-auto max-w-3xl px-5 sm:px-6">
+          <div className="mx-auto max-w-5xl px-5 sm:px-6">
             <Eyebrow light>{content.formEyebrow}</Eyebrow>
-            <h2 className="mt-3 max-w-xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-cream)] sm:text-[1.85rem]">
+            <h2 className="mt-2 text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-cream)] sm:text-[1.85rem]">
               {content.formTitle}
             </h2>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-white/70">
+            <p className="mt-2 text-sm leading-6 text-white/70">
               {content.formSub}
             </p>
-            <div className="mt-8">
+            <div className="mt-5">
               <EvaluationForm />
             </div>
           </div>
         </section>
 
-        <section className="bg-[color:var(--ap-cream)] py-12 sm:py-16">
-          <div className="mx-auto max-w-3xl px-5 sm:px-6">
+        <section className="py-12 sm:py-16">
+          <div className="mx-auto max-w-5xl px-5 sm:px-6">
             <div className="text-center">
               <Eyebrow>{content.testimonialEyebrow}</Eyebrow>
               <h2 className="mt-3 text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
                 {content.testimonialTitle}
               </h2>
             </div>
-            <div className="mt-8">
+            <div className="mx-auto mt-8 w-full max-w-md sm:max-w-lg">
               <VerticalClip
                 src={content.testimonialSrc}
                 poster={content.testimonialPoster}
@@ -194,7 +202,7 @@ export function ApresentacaoLanding() {
         </section>
 
         <section className="py-12 sm:py-14">
-          <div className="mx-auto max-w-3xl px-5 sm:px-6">
+          <div className="mx-auto max-w-5xl px-5 sm:px-6">
             <Eyebrow>{content.faqEyebrow}</Eyebrow>
             <div className="mt-4">
               {content.faq.map((item, index) => (
@@ -210,8 +218,8 @@ export function ApresentacaoLanding() {
         </section>
       </main>
 
-      <footer className="bg-[color:var(--ap-ink)] px-5 py-10 text-[color:var(--ap-cream)] sm:px-6">
-        <div className="mx-auto max-w-3xl">
+      <footer className="ap-pattern-on-dark bg-[color:var(--ap-ink)] px-5 py-10 text-[color:var(--ap-cream)] sm:px-6">
+        <div className="mx-auto max-w-5xl">
           <Image
             src="/brand/grapeclinic-logo-light.svg"
             alt="Grape Clinic"
