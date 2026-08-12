@@ -13,9 +13,9 @@ export const apresentacaoContent = {
     "Na Grape, tratamos a raiz — não o sintoma. Para uma composição corporal que se transforma de forma natural e permanece.",
   ctaLabel: "Agendar minha avaliação",
   formAnchor: "form",
-  videoSrc: "/videos/apresentacao.mp4",
-  videoPoster: "/videos/apresentacao-poster.png",
-  videoEndFrame: "/videos/apresentacao-end.png",
+  videoSrc: "/videos/apresentacao-primeira-vez.mp4",
+  videoPoster: "/videos/apresentacao-entrada.png",
+  videoEndFrame: "/videos/apresentacao-saida.png",
   whatsappPhone: "553531122929",
   whatsappQuickHref:
     "https://api.whatsapp.com/send?phone=553531122929&text=Ol%C3%A1%2C%20vim%20pela%20apresenta%C3%A7%C3%A3o%20da%20Grape%20Clinic%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o!",
