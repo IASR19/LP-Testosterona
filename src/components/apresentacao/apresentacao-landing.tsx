@@ -108,12 +108,8 @@ export function ApresentacaoLanding() {
         <section className="mx-auto grid max-w-5xl gap-8 px-5 pb-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12 lg:pb-16">
           <div>
             <Eyebrow>{content.eyebrow}</Eyebrow>
-            <h1 className="mt-4 max-w-xl text-balance text-[clamp(1.9rem,5vw,3rem)] font-medium leading-[1.12] tracking-[-0.02em] text-[color:var(--ap-primary)]">
-              Sua jornada para a{" "}
-              <em className="font-medium not-italic text-[color:var(--ap-gold)]">
-                melhor
-              </em>{" "}
-              versão de você.
+            <h1 className="mt-4 max-w-xl text-balance text-[clamp(1.75rem,4.6vw,2.85rem)] font-medium leading-[1.14] tracking-[-0.02em] text-[color:var(--ap-primary)]">
+              {content.heroTitle}
             </h1>
             <p className="mt-4 max-w-lg text-[15px] leading-7 text-[color:var(--ap-muted)] sm:text-base">
               {content.heroSub}
@@ -133,59 +129,30 @@ export function ApresentacaoLanding() {
 
         <section className="border-y border-[color:var(--ap-line)] bg-white/70 py-12 sm:py-14">
           <div className="mx-auto max-w-3xl px-5 sm:px-6">
-            <Eyebrow>{content.reasonsEyebrow}</Eyebrow>
-            <h2 className="mt-3 max-w-xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
-              {content.reasonsTitle}
+            <Eyebrow>{content.painEyebrow}</Eyebrow>
+            <h2 className="mt-3 max-w-2xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
+              {content.painTitle}
             </h2>
-            <div className="mt-7 space-y-3">
-              {content.reasons.map((reason, index) => (
-                <div
-                  key={reason.title}
-                  className="flex gap-4 rounded-xl border border-[color:var(--ap-line)] bg-[color:var(--ap-cream)] px-4 py-4"
-                >
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[color:var(--ap-cream-2)] text-sm font-semibold text-[color:var(--ap-primary)]">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-base font-semibold text-[color:var(--ap-ink)]">
-                      {reason.title}
-                    </h3>
-                    <p className="mt-1 text-sm leading-6 text-[color:var(--ap-muted)]">
-                      {reason.body}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[color:var(--ap-muted)]">
+              {content.painBody}
+            </p>
           </div>
         </section>
 
-        <section className="bg-[color:var(--ap-cream-2)] py-10 sm:py-12">
+        <section className="bg-[color:var(--ap-cream-2)] py-12 sm:py-14">
           <div className="mx-auto max-w-3xl px-5 sm:px-6">
-            <Eyebrow>{content.processEyebrow}</Eyebrow>
-            <h2 className="mt-3 text-xl font-medium text-[color:var(--ap-primary)] sm:text-2xl">
-              {content.processTitle}
+            <Eyebrow>{content.solutionEyebrow}</Eyebrow>
+            <h2 className="mt-3 max-w-2xl text-balance text-2xl font-medium tracking-[-0.02em] text-[color:var(--ap-primary)] sm:text-[1.75rem]">
+              {content.solutionTitle}
             </h2>
-            <div className="mt-5">
-              {content.process.map((step, index) => (
-                <div
-                  key={step.title}
-                  className="flex gap-4 border-t border-[color:var(--ap-line)] py-4 last:border-b"
-                >
-                  <span className="w-7 shrink-0 text-sm font-semibold text-[color:var(--ap-gold)]">
-                    0{index + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-[15px] font-semibold text-[color:var(--ap-ink)]">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-[color:var(--ap-muted)]">
-                      {step.body}
-                    </p>
-                  </div>
-                </div>
+            <div className="mt-4 max-w-2xl space-y-4 text-[15px] leading-7 text-[color:var(--ap-muted)]">
+              {content.solutionBody.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
+            <p className="mt-8 text-lg font-medium tracking-[-0.01em] text-[color:var(--ap-primary)] sm:text-xl">
+              {content.solutionTagline}
+            </p>
           </div>
         </section>
 

@@ -1,17 +1,17 @@
 export const apresentacaoMeta = {
   title: "Apresentação | Grape Clinic",
   description:
-    "Conheça a Grape Clinic e solicite uma avaliação individual em Pouso Alegre, MG.",
+    "Seu corpo muda quando hormônio e metabolismo entram em equilíbrio. Avaliação individual na Grape Clinic.",
   path: "/apresentacao",
 } as const;
 
 export const apresentacaoContent = {
   eyebrow: "Pouso Alegre, MG",
-  heroTitle: "Sua jornada para a melhor versão de você.",
-  heroHighlight: "melhor",
+  heroTitle:
+    "Seu corpo muda quando hormônio e metabolismo entram em equilíbrio.",
   heroSub:
-    "Ciência, estética e bem-estar em um cuidado clínico feito para o seu momento — sem protocolo genérico.",
-  ctaLabel: "Agende sua avaliação",
+    "Na Grape, tratamos a raiz — não o sintoma. Para uma composição corporal que se transforma de forma natural e permanece.",
+  ctaLabel: "Agendar minha avaliação",
   formAnchor: "form",
   videoSrc: "/videos/apresentacao.mp4",
   videoPoster: "/videos/apresentacao-poster.png",
@@ -19,41 +19,22 @@ export const apresentacaoContent = {
   whatsappPhone: "553531122929",
   whatsappQuickHref:
     "https://api.whatsapp.com/send?phone=553531122929&text=Ol%C3%A1%2C%20vim%20pela%20apresenta%C3%A7%C3%A3o%20da%20Grape%20Clinic%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o!",
-  reasonsTitle: "Cuidado clínico, não pacote de estética.",
-  reasonsEyebrow: "Por que a Grape Clinic",
-  reasons: [
-    {
-      title: "Avaliação médica de verdade",
-      body: "A equipe investiga a causa antes de indicar qualquer tratamento.",
-    },
-    {
-      title: "Plano feito para você",
-      body: "Nada de protocolo padrão — o plano é construído a partir da sua avaliação.",
-    },
-    {
-      title: "Acompanhamento contínuo",
-      body: "A equipe segue com você, presencialmente, em Pouso Alegre.",
-    },
+  painEyebrow: "O que trava",
+  painTitle:
+    "Dieta certa, treino em dia, esforço redobrado — e o corpo continua no mesmo lugar.",
+  painBody:
+    "Às vezes o esforço está certo. O que está desregulado é o hormônio e o metabolismo por trás dele.",
+  solutionEyebrow: "O reframe",
+  solutionTitle: "Na Grape, olhamos para a causa, não para o resultado isolado.",
+  solutionBody: [
+    "Seu histórico hormonal e metabólico é avaliado de forma individual, para identificar exatamente o que está travando o seu corpo.",
+    "De dentro para fora: quando o equilíbrio interno acontece, a mudança externa é consequência natural.",
   ],
-  processEyebrow: "Como funciona",
-  processTitle: "3 passos até o seu plano",
-  process: [
-    {
-      title: "Avaliação individual",
-      body: "Conversa com a equipe sobre seu momento e histórico.",
-    },
-    {
-      title: "Protocolo sob medida",
-      body: "Plano específico construído a partir da sua leitura clínica.",
-    },
-    {
-      title: "Acompanhamento",
-      body: "Retornos e ajustes ao longo da jornada.",
-    },
-  ],
-  formEyebrow: "Comece por aqui",
-  formTitle: "Uma avaliação individual é o melhor começo.",
-  formSub: "A equipe entende seu momento e indica o próximo passo.",
+  solutionTagline: "Viver mais. Viver melhor. Viver juntos.",
+  formEyebrow: "Avaliação",
+  formTitle: "Agendar minha avaliação",
+  formSub:
+    "Fale com a nossa equipe e descubra o que está por trás do que você sente.",
   faqEyebrow: "Dúvidas rápidas",
   faq: [
     {
@@ -70,7 +51,8 @@ export const apresentacaoContent = {
     },
   ],
   footerLegal: [
-    "Dra. Marcela Ferreira de Oliveira — CRM/MG: 55051 - RQE Nº: 33744 — Ginecologia e Obstetrícia — Grape Clinic — CRM/PJ: 14610-MG — Diretora Técnica.",
+    "Dra. Marcela Ferreira de Oliveira · CRM/MG 55051 · RQE nº 33744",
+    "Ginecologia e Obstetrícia · Grape Clinic · CRM/PJ 14610-MG · Diretora Técnica",
     "Conteúdo educativo. Resultados variam por pessoa e dependem de avaliação médica individual.",
     "© 2026 Grape Clinic. CNPJ 21.762.194/0001-32. R. Cel. Brito Filho, nº461, Fátima, Pouso Alegre - MG.",
   ],
@@ -138,9 +120,7 @@ export const initialEvaluationAnswers: EvaluationAnswers = {
 
 export function buildWhatsAppHref(answers: EvaluationAnswers) {
   const situacoes =
-    answers.situacoes.length > 0
-      ? answers.situacoes.join(", ")
-      : "—";
+    answers.situacoes.length > 0 ? answers.situacoes.join(", ") : "—";
 
   const text = [
     "Olá! Vim pela apresentação da Grape Clinic e gostaria de agendar uma avaliação.",
