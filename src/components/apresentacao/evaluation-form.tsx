@@ -4,6 +4,7 @@ import {
   Check,
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
   LoaderCircle,
   Send,
   X,
@@ -674,7 +675,7 @@ export function EvaluationForm() {
     <>
       <form
         onSubmit={handleSubmit}
-        className="rounded-2xl border border-[color:var(--ap-line)] bg-white p-5 text-[color:var(--ap-ink)] sm:p-7"
+        className="rounded-lg border border-[color:var(--ap-line)] bg-white p-5 text-[color:var(--ap-ink)] sm:p-7"
         noValidate
       >
         <div className="flex items-center justify-between gap-3">
@@ -934,7 +935,7 @@ export function EvaluationForm() {
           </p>
         ) : null}
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex items-center gap-3 border-t border-[color:var(--ap-line)] pt-5">
           {step > 0 ? (
             <button
               type="button"
@@ -942,7 +943,7 @@ export function EvaluationForm() {
                 setSubmitError("");
                 setStep(0);
               }}
-              className="inline-flex h-12 items-center justify-center gap-1 rounded-lg border border-[color:var(--ap-line)] px-4 text-sm font-medium text-[color:var(--ap-muted)]"
+              className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-[color:var(--ap-line)] px-5 text-sm font-medium text-[color:var(--ap-muted)]"
             >
               <ChevronLeft className="size-4" aria-hidden />
               Voltar
@@ -951,7 +952,7 @@ export function EvaluationForm() {
           <button
             type="submit"
             disabled={submitting}
-            className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-[color:var(--ap-gold)] px-4 text-sm font-semibold text-[color:var(--ap-primary)] disabled:opacity-60"
+            className="ml-auto inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[color:var(--ap-cta)] px-6 text-sm font-semibold text-[color:var(--ap-ink)] disabled:opacity-60"
           >
             {submitting ? (
               <>
@@ -964,7 +965,10 @@ export function EvaluationForm() {
                 <Send className="size-4" aria-hidden />
               </>
             ) : (
-              "Continuar"
+              <>
+                Continuar
+                <ChevronRight className="size-4" aria-hidden />
+              </>
             )}
           </button>
         </div>

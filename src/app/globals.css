@@ -29,31 +29,20 @@ body {
 
 /* Tokens locais da LP /apresentacao (não afetam chat das outras campanhas) */
 .apresentacao-lp {
-  --ap-cream: #f7f3ec;
-  --ap-cream-2: #efe8dc;
+  --ap-cream: #ebe7e0;
+  --ap-cream-2: #e1dcd3;
   --ap-ink: #241a16;
   --ap-muted: #6a5b52;
-  --ap-primary: #614d3a;
-  --ap-gold: #b98b4e;
-  --ap-gold-light: #d9bd8c;
-  --ap-line: rgba(97, 77, 58, 0.16);
-  --ap-pattern: url("/brand/pattern-elos.jpg");
+  --ap-primary: #634a32;
+  --ap-gold: #d4a017;
+  --ap-gold-light: #e8c35a;
+  --ap-cta: #e5b012;
+  --ap-line: rgba(99, 74, 50, 0.16);
   position: relative;
   isolation: isolate;
   color-scheme: light;
-}
-
-.apresentacao-lp::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--ap-pattern);
-  background-size: 380px;
-  background-repeat: repeat;
-  opacity: 0.05;
-  mix-blend-mode: multiply;
+  background-color: var(--ap-cream);
+  overflow-x: clip;
 }
 
 .apresentacao-lp > * {
@@ -65,34 +54,143 @@ body {
   text-decoration: none;
 }
 
-/* Faixas escuras (formulário / rodapé): pattern claro no marrom */
-.apresentacao-lp .ap-pattern-on-dark {
+/* Cachos repetidos, bem sutis, sobre o marrom */
+.apresentacao-lp .ap-grapes-on-dark {
   position: relative;
   isolation: isolate;
   overflow: hidden;
 }
 
-.apresentacao-lp .ap-pattern-on-dark::before {
+.apresentacao-lp .ap-grapes-on-dark::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: var(--ap-pattern);
-  background-size: 380px;
+  background-image: url("/brand/pattern-cachos-light.svg");
+  background-size: 300px;
   background-repeat: repeat;
-  opacity: 0.11;
-  mix-blend-mode: screen;
+  opacity: 0.07;
 }
 
-.apresentacao-lp .ap-pattern-on-dark > *:not(.ap-mark) {
+.apresentacao-lp .ap-grapes-on-dark > * {
   position: relative;
   z-index: 1;
 }
 
+/* Cachos repetidos sobre o creme (bloco de FAQ) */
+.apresentacao-lp .ap-grapes-on-light {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.apresentacao-lp .ap-grapes-on-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/brand/pattern-cachos-dark.svg");
+  background-size: 120px;
+  background-repeat: repeat;
+  opacity: 0.1;
+}
+
+.apresentacao-lp .ap-grapes-on-light > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Marca d'agua: cacho gigante, fora do fluxo */
 .apresentacao-lp .ap-mark {
+  position: absolute;
+  z-index: 0;
   pointer-events: none;
   user-select: none;
+}
+
+/* Botao de play pulsando, por cima do play desenhado na capa */
+.apresentacao-lp .ap-play-pulse {
+  --ap-pulse-rgb: 255 255 255;
+  position: absolute;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.94);
+  color: var(--ap-primary);
+  pointer-events: none;
+  animation: ap-play-pulse 2.1s ease-out infinite;
+}
+
+.apresentacao-lp .ap-play-pulse--wine {
+  --ap-pulse-rgb: 157 40 59;
+  background: rgb(157 40 59 / 0.95);
+  color: #fff;
+}
+
+@keyframes ap-play-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--ap-pulse-rgb) / 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgb(var(--ap-pulse-rgb) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(var(--ap-pulse-rgb) / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apresentacao-lp .ap-play-pulse {
+    animation: none;
+  }
+}
+
+/* CTA principal: halo dourado difuso (padrao do Canva) */
+.apresentacao-lp .ap-cta {
+  box-shadow:
+    0 0 0 8px rgb(229 176 18 / 0.1),
+    0 0 30px 6px rgb(229 176 18 / 0.32),
+    0 10px 24px -12px rgb(99 74 50 / 0.45);
+  animation: ap-cta-glow 3s ease-in-out infinite;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.apresentacao-lp .ap-cta:hover,
+.apresentacao-lp .ap-cta:focus-visible {
+  animation-play-state: paused;
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 10px rgb(229 176 18 / 0.16),
+    0 0 42px 10px rgb(229 176 18 / 0.45),
+    0 14px 28px -12px rgb(99 74 50 / 0.5);
+}
+
+@keyframes ap-cta-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 6px rgb(229 176 18 / 0.08),
+      0 0 22px 4px rgb(229 176 18 / 0.24),
+      0 10px 24px -12px rgb(99 74 50 / 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 12px rgb(229 176 18 / 0.14),
+      0 0 40px 10px rgb(229 176 18 / 0.42),
+      0 10px 24px -12px rgb(99 74 50 / 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apresentacao-lp .ap-cta {
+    animation: none;
+  }
 }
 
 @keyframes cta-pulse {

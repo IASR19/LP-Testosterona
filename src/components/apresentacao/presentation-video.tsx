@@ -3,9 +3,16 @@
 import { Play } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 import { apresentacaoContent } from "@/content/apresentacao";
+
+// posicao do botao de play que ja vem desenhado na capa (medido no PNG, apos o object-cover)
+const playHotspot: CSSProperties = {
+  left: "51.4%",
+  top: "86.8%",
+  height: "8%",
+};
 
 const fade = {
   initial: { opacity: 0 },
@@ -70,12 +77,12 @@ export function PresentationVideo() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[360px] lg:mx-0 lg:ml-auto lg:max-w-[380px]">
+    <div className="relative mx-auto w-full max-w-[360px] lg:mx-0 lg:ml-auto lg:max-w-[380px]">
       <div className="relative overflow-hidden rounded-2xl bg-[color:var(--ap-cream)] shadow-[0_24px_60px_-28px_rgba(36,26,22,0.45)] ring-1 ring-black/10">
         <div className="relative aspect-[9/16] w-full">
           <video
             ref={videoRef}
-            className="h-full w-full bg-black object-contain"
+            className="h-full w-full bg-[color:var(--ap-cream)] object-cover"
             src={apresentacaoContent.videoSrc}
             poster={apresentacaoContent.videoPoster}
             playsInline
@@ -106,6 +113,7 @@ export function PresentationVideo() {
                   alt=""
                   fill
                   priority
+                  unoptimized
                   sizes="(max-width: 1024px) 360px, 400px"
                   className="object-cover"
                   aria-hidden
@@ -113,11 +121,11 @@ export function PresentationVideo() {
                 <button
                   type="button"
                   onClick={togglePlay}
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="absolute inset-0 cursor-pointer"
                   aria-label="Reproduzir vídeo"
                 >
-                  <span className="grid size-16 place-items-center rounded-full bg-[color:var(--ap-primary)] text-white shadow-lg transition hover:scale-[1.03] sm:size-[4.25rem]">
-                    <Play className="ml-1 size-7 sm:size-8" fill="currentColor" />
+                  <span className="ap-play-pulse" style={playHotspot}>
+                    <Play className="size-1/2 translate-x-[6%]" fill="currentColor" />
                   </span>
                 </button>
               </motion.div>
@@ -135,6 +143,7 @@ export function PresentationVideo() {
                   src={apresentacaoContent.videoEndFrame}
                   alt=""
                   fill
+                  unoptimized
                   sizes="(max-width: 1024px) 360px, 400px"
                   className="object-cover"
                   aria-hidden
@@ -142,11 +151,11 @@ export function PresentationVideo() {
                 <button
                   type="button"
                   onClick={playFromStart}
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="absolute inset-0 cursor-pointer"
                   aria-label="Assistir novamente"
                 >
-                  <span className="grid size-14 place-items-center rounded-full bg-[color:var(--ap-primary)] text-white shadow-lg">
-                    <Play className="ml-0.5 size-6" fill="currentColor" />
+                  <span className="ap-play-pulse" style={playHotspot}>
+                    <Play className="size-1/2 translate-x-[6%]" fill="currentColor" />
                   </span>
                 </button>
               </motion.div>

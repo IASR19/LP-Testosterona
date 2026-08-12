@@ -2,13 +2,21 @@
 
 import { Play } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+// posicao do play desenhado na capa (medido no PNG, apos o object-cover)
+const playHotspot: CSSProperties = {
+  left: "53.7%",
+  top: "49.3%",
+  height: "14%",
+};
 
 type VerticalClipProps = {
   src: string;
   poster: string;
+  endFrame?: string;
   ariaLabel: string;
   className?: string;
 };
@@ -16,16 +24,40 @@ type VerticalClipProps = {
 export function VerticalClip({
   src,
   poster,
+  endFrame,
   ariaLabel,
   className,
 }: VerticalClipProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
+  const cover = endFrame ?? poster;
+
+  async function playFromStart() {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      setEnded(false);
+      video.currentTime = 0;
+      video.muted = false;
+      await video.play();
+      setPlaying(true);
+      setStarted(true);
+    } catch {
+      setPlaying(false);
+    }
+  }
 
   async function togglePlay() {
     const video = videoRef.current;
     if (!video) return;
+
+    if (ended) {
+      await playFromStart();
+      return;
+    }
 
     if (video.paused) {
       try {
@@ -33,6 +65,7 @@ export function VerticalClip({
         await video.play();
         setPlaying(true);
         setStarted(true);
+        setEnded(false);
       } catch {
         setPlaying(false);
       }
@@ -47,22 +80,26 @@ export function VerticalClip({
     <div
       className={cn("mx-auto w-full max-w-[360px] lg:max-w-[400px]", className)}
     >
-      <div className="relative overflow-hidden rounded-2xl bg-[color:var(--ap-ink)] shadow-[0_24px_60px_-28px_rgba(36,26,22,0.45)] ring-1 ring-black/10">
+      <div className="relative overflow-hidden rounded-2xl bg-[color:var(--ap-cream)] shadow-[0_24px_60px_-28px_rgba(36,26,22,0.45)] ring-1 ring-black/10">
         <div className="relative aspect-[9/16] w-full">
           <video
             ref={videoRef}
-            className="h-full w-full bg-black object-contain"
+            className="h-full w-full bg-[color:var(--ap-cream)] object-cover"
             src={src}
             poster={poster}
             playsInline
             preload="metadata"
-            controls={started}
+            controls={started && !ended}
             onPlay={() => {
               setPlaying(true);
               setStarted(true);
+              setEnded(false);
             }}
             onPause={() => setPlaying(false)}
-            onEnded={() => setPlaying(false)}
+            onEnded={() => {
+              setPlaying(false);
+              setEnded(true);
+            }}
             aria-label={ariaLabel}
           />
 
@@ -72,6 +109,7 @@ export function VerticalClip({
                 src={poster}
                 alt=""
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 360px, 400px"
                 className="object-cover"
                 aria-hidden
@@ -79,17 +117,53 @@ export function VerticalClip({
               <button
                 type="button"
                 onClick={togglePlay}
-                className="absolute inset-0 z-10 flex items-center justify-center bg-gradient-to-t from-black/40 via-black/10 to-transparent"
+                className="absolute inset-0 z-10 cursor-pointer"
                 aria-label="Reproduzir depoimento"
               >
-                <span className="grid size-16 place-items-center rounded-full bg-[color:var(--ap-primary)] text-white shadow-lg transition hover:scale-[1.03] sm:size-[4.25rem]">
-                  <Play className="ml-1 size-7 sm:size-8" fill="currentColor" />
+                <span
+                  className="ap-play-pulse ap-play-pulse--wine"
+                  style={playHotspot}
+                >
+                  <Play
+                    className="size-1/2 translate-x-[6%]"
+                    fill="currentColor"
+                  />
                 </span>
               </button>
             </>
           ) : null}
 
-          {started && !playing ? (
+          {ended ? (
+            <>
+              <Image
+                src={cover}
+                alt=""
+                fill
+                unoptimized
+                sizes="(max-width: 1024px) 360px, 400px"
+                className="object-cover"
+                aria-hidden
+              />
+              <button
+                type="button"
+                onClick={playFromStart}
+                className="absolute inset-0 z-10 cursor-pointer"
+                aria-label="Assistir depoimento novamente"
+              >
+                <span
+                  className="ap-play-pulse ap-play-pulse--wine"
+                  style={playHotspot}
+                >
+                  <Play
+                    className="size-1/2 translate-x-[6%]"
+                    fill="currentColor"
+                  />
+                </span>
+              </button>
+            </>
+          ) : null}
+
+          {started && !playing && !ended ? (
             <button
               type="button"
               onClick={togglePlay}
