@@ -15,8 +15,8 @@ export const apresentacaoContent = {
   ctaLabel: "Agendar avaliação",
   formAnchor: "form",
   videoSrc: "/videos/apresentacao-primeira-vez.mp4",
-  videoPoster: "/videos/apresentacao-capa-v2.png",
-  videoEndFrame: "/videos/apresentacao-capa-v2.png",
+  videoPoster: "/videos/apresentacao-cover.png",
+  videoEndFrame: "/videos/apresentacao-cover.png",
   whatsappPhone: "553531122929",
   whatsappQuickHref:
     "https://api.whatsapp.com/send?phone=553531122929&text=Ol%C3%A1%2C%20vim%20pela%20apresenta%C3%A7%C3%A3o%20da%20Grape%20Clinic%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o!",
@@ -60,8 +60,8 @@ export const apresentacaoContent = {
     "Cada pessoa que passa pela Grape carrega uma história única. Aqui, você acompanha relatos de quem viveu a jornada de equilíbrio hormonal e colheu resultados reais no corpo, no humor e na energia do dia a dia.",
   testimonialNames: "Letícia Leone e Junior Coldibelli",
   testimonialSrc: "/videos/depoimento-junior-leticia.mp4",
-  testimonialPoster: "/videos/depoimento-capa-v2.png",
-  testimonialEndFrame: "/videos/depoimento-capa-v2.png",
+  testimonialPoster: "/videos/depoimento-cover.png",
+  testimonialEndFrame: "/videos/depoimento-cover.png",
   faqEyebrow: "Dúvidas rápidas",
   faq: [
     {

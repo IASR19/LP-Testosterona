@@ -2,7 +2,6 @@
 
 import { Play } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import { type CSSProperties, useRef, useState } from "react";
 
 import { apresentacaoContent } from "@/content/apresentacao";
@@ -108,14 +107,11 @@ export function PresentationVideo() {
                 className="absolute inset-0 z-10"
                 {...fade}
               >
-                <Image
+                <img
                   src={apresentacaoContent.videoPoster}
                   alt=""
-                  fill
-                  priority
-                  unoptimized
-                  sizes="(max-width: 1024px) 360px, 400px"
-                  className="object-cover"
+                  fetchPriority="high"
+                  className="absolute inset-0 h-full w-full object-cover"
                   aria-hidden
                 />
                 <button
@@ -139,13 +135,10 @@ export function PresentationVideo() {
                 className="absolute inset-0 z-10"
                 {...fade}
               >
-                <Image
+                <img
                   src={apresentacaoContent.videoEndFrame}
                   alt=""
-                  fill
-                  unoptimized
-                  sizes="(max-width: 1024px) 360px, 400px"
-                  className="object-cover"
+                  className="absolute inset-0 h-full w-full object-cover"
                   aria-hidden
                 />
                 <button

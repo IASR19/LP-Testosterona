@@ -1,7 +1,6 @@
 "use client";
 
 import { Play } from "lucide-react";
-import Image from "next/image";
 import { type CSSProperties, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -105,13 +104,10 @@ export function VerticalClip({
 
           {!started ? (
             <>
-              <Image
+              <img
                 src={poster}
                 alt=""
-                fill
-                unoptimized
-                sizes="(max-width: 1024px) 360px, 400px"
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
                 aria-hidden
               />
               <button
@@ -135,13 +131,10 @@ export function VerticalClip({
 
           {ended ? (
             <>
-              <Image
+              <img
                 src={cover}
                 alt=""
-                fill
-                unoptimized
-                sizes="(max-width: 1024px) 360px, 400px"
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
                 aria-hidden
               />
               <button
