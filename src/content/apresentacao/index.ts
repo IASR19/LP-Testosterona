@@ -80,8 +80,8 @@ export const apresentacaoContent = {
   footerCtaTitle: "Uma avaliação individual é o melhor começo.",
   footerCtaSub:
     "A equipe entende seu momento, orienta o próximo passo e indica se a Grape Clinic é o caminho certo para você.",
-  footerCtaLabel: "Acesse o nosso site",
-  footerCtaHint: "Conhecer a Grape Clinic",
+  footerCtaLabel: "Iniciar atendimento",
+  footerCtaHint: "Nossa equipe está pronta para te ouvir",
   footerCity: "Pouso Alegre, MG",
   footerAddress:
     "R. Cel. Brito Filho, nº 461 - e 469 - Fátima, Pouso Alegre - MG, 37554-246",

@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Droplet,
   Dumbbell,
+  Globe,
   HeartPulse,
   Leaf,
   MapPin,
@@ -145,7 +146,7 @@ export function ApresentacaoLanding() {
 
   return (
     <div className="apresentacao-lp min-h-full bg-[color:var(--ap-cream)] text-[color:var(--ap-ink)]">
-      <header className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
+      <header className="mx-auto flex max-w-5xl items-center px-5 py-4 sm:px-6">
         <a href="#topo" className="block shrink-0" aria-label="Grape Clinic">
           <Image
             src="/brand/grapeclinic-logo-dark.svg"
@@ -156,16 +157,10 @@ export function ApresentacaoLanding() {
             className="h-9 w-auto"
           />
         </a>
-        <a
-          href={`#${content.formAnchor}`}
-          className="rounded-full bg-[color:var(--ap-cta)] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-[color:var(--ap-ink)]"
-        >
-          {content.ctaLabel}
-        </a>
       </header>
 
       <main id="topo">
-        <section className="relative mx-auto grid max-w-5xl gap-8 px-5 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-12 lg:pb-10">
+        <section className="relative mx-auto grid max-w-5xl gap-6 px-5 pb-8 sm:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center lg:gap-x-12 lg:pb-10">
           <Parallax
             className="ap-mark left-[3%] top-[2%] h-[92%]"
             distance={60}
@@ -181,50 +176,44 @@ export function ApresentacaoLanding() {
             />
           </Parallax>
 
-          <div className="relative min-w-0">
-            <p className="text-sm font-semibold text-[color:var(--ap-gold)]">
-              {content.eyebrow}
-            </p>
-            <h1 className="mt-9 text-[clamp(1.6rem,3.6vw,2.4rem)] font-normal leading-[1.28] tracking-[-0.015em] text-[color:var(--ap-primary)]">
+          <div className="contents lg:flex lg:flex-col lg:justify-center lg:gap-6">
+            <h1 className="order-1 text-[clamp(1.6rem,3.6vw,2.4rem)] font-normal leading-[1.28] tracking-[-0.015em] text-[color:var(--ap-primary)] lg:order-none">
               <span className="block">{content.heroTitleBefore}</span>
               <span className="block font-semibold">
                 {content.heroTitleAccent}
               </span>
               <span className="block">{content.heroTitleAfter}</span>
             </h1>
-            <p className="mt-6 max-w-xl text-justify text-[15px] leading-7 text-[color:var(--ap-muted)]">
-              {content.heroSub}
-            </p>
-            <div className="mt-7">
-              <a
-                href={`#${content.formAnchor}`}
-                className="ap-cta inline-flex h-12 items-center justify-center rounded-full bg-[color:var(--ap-cta)] px-7 text-sm font-semibold uppercase tracking-wide text-[color:var(--ap-ink)]"
-              >
-                {content.ctaLabel}
-              </a>
-            </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-3 border-t border-[color:var(--ap-line)] pt-5 sm:gap-6">
-              {content.stats.map((stat) => (
-                <div key={stat.value}>
-                  <p className="text-xl font-semibold tracking-tight text-[color:var(--ap-primary)] sm:text-2xl">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-[11px] leading-4 text-[color:var(--ap-muted)] sm:text-xs">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <div className="order-3 min-w-0 lg:order-none">
+              <p className="max-w-xl text-justify text-[15px] leading-7 text-[color:var(--ap-muted)]">
+                {content.heroSub}
+              </p>
+              <div className="mt-7">
+                <a
+                  href={`#${content.formAnchor}`}
+                  className="ap-cta inline-flex h-12 items-center justify-center rounded-full bg-[color:var(--ap-cta)] px-7 text-sm font-semibold uppercase tracking-wide text-[color:var(--ap-ink)]"
+                >
+                  {content.ctaLabel}
+                </a>
+              </div>
 
-            <div className="mt-8 space-y-1.5 text-[10.5px] leading-4 text-[color:var(--ap-muted)]/80 sm:text-[11px]">
-              {content.heroLegal.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
+              <div className="mt-4 grid grid-cols-3 gap-3 border-t border-[color:var(--ap-line)] pt-5 sm:gap-6">
+                {content.stats.map((stat) => (
+                  <div key={stat.value}>
+                    <p className="text-xl font-semibold tracking-tight text-[color:var(--ap-primary)] sm:text-2xl">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-4 text-[color:var(--ap-muted)] sm:text-xs">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <Parallax distance={18} aboveFold>
+          <Parallax className="order-2 lg:order-none" distance={18} aboveFold>
             <PresentationVideo />
           </Parallax>
         </section>
@@ -328,7 +317,7 @@ export function ApresentacaoLanding() {
         </section>
 
         <section className="py-12 sm:py-16">
-          <div className="mx-auto grid max-w-5xl gap-10 px-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:items-start lg:gap-12">
+          <div className="mx-auto grid max-w-5xl gap-6 px-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:items-start lg:gap-x-12 lg:gap-y-5">
             <div>
               <Parallax distance={20}>
                 <Image
@@ -345,7 +334,23 @@ export function ApresentacaoLanding() {
                   {content.testimonialTitleAccent}
                 </span>
               </h2>
-              <p className="mt-5 text-justify text-[15px] leading-7 text-[color:var(--ap-muted)]">
+            </div>
+
+            <Parallax
+              className="lg:row-span-2 lg:justify-self-end"
+              distance={28}
+            >
+              <VerticalClip
+                src={content.testimonialSrc}
+                poster={content.testimonialPoster}
+                endFrame={content.testimonialEndFrame}
+                ariaLabel={`Depoimento em vídeo de ${content.testimonialNames}`}
+                className="mx-0 max-w-none lg:max-w-[400px]"
+              />
+            </Parallax>
+
+            <div>
+              <p className="text-justify text-[15px] leading-7 text-[color:var(--ap-muted)]">
                 {content.testimonialBody}
               </p>
 
@@ -363,27 +368,16 @@ export function ApresentacaoLanding() {
               <div className="ap-grapes-on-light mt-10 rounded-lg px-4 py-5 sm:px-5">
                 <Eyebrow>{content.faqEyebrow}</Eyebrow>
                 <div className="mt-3">
-                  {content.faq.map((item, index) => (
+                  {content.faq.map((item) => (
                     <FaqItem
                       key={item.question}
                       question={item.question}
                       answer={item.answer}
-                      defaultOpen={index === 0}
                     />
                   ))}
                 </div>
               </div>
             </div>
-
-            <Parallax className="lg:justify-self-end" distance={28}>
-              <VerticalClip
-                src={content.testimonialSrc}
-                poster={content.testimonialPoster}
-                endFrame={content.testimonialEndFrame}
-                ariaLabel={`Depoimento em vídeo de ${content.testimonialNames}`}
-                className="mx-0 max-w-none lg:max-w-[400px]"
-              />
-            </Parallax>
           </div>
         </section>
       </main>
@@ -409,7 +403,7 @@ export function ApresentacaoLanding() {
 
             <aside className="flex w-full flex-col gap-4 lg:justify-self-end">
               <a
-                href={content.siteHref}
+                href={content.whatsappQuickHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[3.75rem] items-center justify-between gap-4 rounded-xl bg-white px-4 py-3.5 text-[color:var(--ap-primary)] sm:min-h-[4.25rem] sm:px-5 sm:py-4"
@@ -423,7 +417,7 @@ export function ApresentacaoLanding() {
                   </span>
                 </span>
                 <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[color:var(--ap-primary)] text-white sm:size-11">
-                  <ArrowRight className="size-4" aria-hidden />
+                  <MessageCircle className="size-4" aria-hidden />
                 </span>
               </a>
 
@@ -436,14 +430,14 @@ export function ApresentacaoLanding() {
                       icon: Camera,
                     },
                     {
+                      label: "Site",
+                      href: content.siteHref,
+                      icon: Globe,
+                    },
+                    {
                       label: "YouTube",
                       href: content.youtubeHref,
                       icon: PlayCircle,
-                    },
-                    {
-                      label: "WhatsApp",
-                      href: content.whatsappQuickHref,
-                      icon: MessageCircle,
                     },
                     {
                       label: "Google",
