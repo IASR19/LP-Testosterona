@@ -144,7 +144,9 @@ function FaqItem({
 export function ApresentacaoLanding() {
   const content = apresentacaoContent;
   const year = new Date().getFullYear();
-  const [atendimentoHref, setAtendimentoHref] = useState(content.atendimentoHref);
+  const [atendimentoHref, setAtendimentoHref] = useState<string>(
+    content.atendimentoHref,
+  );
 
   useEffect(() => {
     readUtmsFromWindow();
