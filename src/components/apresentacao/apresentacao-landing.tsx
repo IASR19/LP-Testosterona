@@ -293,7 +293,7 @@ export function ApresentacaoLanding() {
           id={content.formAnchor}
           className="ap-grapes-on-dark scroll-mt-6 border-t border-white/10 bg-[color:var(--ap-primary)] py-10 text-white sm:py-14"
         >
-          <div className="mx-auto grid max-w-5xl gap-8 px-5 sm:px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-12">
+          <div className="mx-auto grid max-w-5xl gap-8 px-5 sm:px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-12">
             <div>
               <Parallax distance={22}>
                 <Image
