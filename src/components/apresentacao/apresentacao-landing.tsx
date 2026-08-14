@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Apple,
@@ -28,6 +28,7 @@ import { PresentationVideo } from "@/components/apresentacao/presentation-video"
 import { VerticalClip } from "@/components/apresentacao/vertical-clip";
 import { apresentacaoContent } from "@/content/apresentacao";
 import { cn } from "@/lib/utils";
+import { readUtmsFromWindow, withUtms } from "@/lib/utm";
 
 const pillarIcons: Record<string, LucideIcon> = {
   heart: HeartPulse,
@@ -143,6 +144,12 @@ function FaqItem({
 export function ApresentacaoLanding() {
   const content = apresentacaoContent;
   const year = new Date().getFullYear();
+  const [atendimentoHref, setAtendimentoHref] = useState(content.atendimentoHref);
+
+  useEffect(() => {
+    readUtmsFromWindow();
+    setAtendimentoHref(withUtms(content.atendimentoHref));
+  }, [content.atendimentoHref]);
 
   return (
     <div className="apresentacao-lp min-h-full bg-[color:var(--ap-cream)] text-[color:var(--ap-ink)]">
@@ -403,9 +410,13 @@ export function ApresentacaoLanding() {
 
             <aside className="flex w-full flex-col gap-4 lg:justify-self-end">
               <a
-                href={content.whatsappQuickHref}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={atendimentoHref}
+                onClick={(event) => {
+                  const next = withUtms(content.atendimentoHref);
+                  if (next === atendimentoHref) return;
+                  event.preventDefault();
+                  window.location.assign(next);
+                }}
                 className="group flex min-h-[3.75rem] items-center justify-between gap-4 rounded-xl bg-white px-4 py-3.5 text-[color:var(--ap-primary)] sm:min-h-[4.25rem] sm:px-5 sm:py-4"
               >
                 <span className="min-w-0">

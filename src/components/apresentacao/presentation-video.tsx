@@ -1,8 +1,8 @@
 "use client";
 
-import { Play } from "lucide-react";
+import { Play, VolumeX } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { type CSSProperties, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { apresentacaoContent } from "@/content/apresentacao";
 
@@ -22,20 +22,86 @@ const fade = {
 
 export function PresentationVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const autoplayCancelledRef = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [ended, setEnded] = useState(false);
   const [entering, setEntering] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [autoplayFailed, setAutoplayFailed] = useState(false);
 
-  async function playFromStart() {
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let cancelled = false;
+    const timeout = window.setTimeout(() => {
+      if (cancelled || autoplayCancelledRef.current) return;
+
+      void (async () => {
+        video.volume = 1;
+        video.muted = false;
+        video.defaultMuted = false;
+
+        try {
+          await video.play();
+          if (cancelled || autoplayCancelledRef.current) {
+            video.pause();
+            return;
+          }
+          setMuted(false);
+          setPlaying(true);
+          setStarted(true);
+          return;
+        } catch {
+          // Mobile/Safari bloqueia autoplay com áudio; tenta mudo.
+        }
+
+        if (cancelled || autoplayCancelledRef.current) return;
+
+        video.muted = true;
+        video.defaultMuted = true;
+        try {
+          await video.play();
+          if (cancelled || autoplayCancelledRef.current) {
+            video.pause();
+            return;
+          }
+          setMuted(true);
+          setPlaying(true);
+          setStarted(true);
+        } catch {
+          if (!cancelled && !autoplayCancelledRef.current) {
+            setAutoplayFailed(true);
+          }
+        }
+      })();
+    }, 1200);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
+  function unmute() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setMuted(false);
+  }
+
+  async function playFromStart(withSound = true) {
     const video = videoRef.current;
     if (!video) return;
 
     try {
+      autoplayCancelledRef.current = true;
       setEntering(true);
       setEnded(false);
       video.currentTime = 0;
-      video.muted = false;
+      video.muted = !withSound;
+      setMuted(!withSound);
       await video.play();
       setPlaying(true);
       setStarted(true);
@@ -43,6 +109,7 @@ export function PresentationVideo() {
     } catch {
       setPlaying(false);
       setEntering(false);
+      setAutoplayFailed(true);
     }
   }
 
@@ -51,14 +118,13 @@ export function PresentationVideo() {
     if (!video) return;
 
     if (ended) {
-      await playFromStart();
+      await playFromStart(true);
       return;
     }
 
     if (video.paused) {
       try {
         if (!started) setEntering(true);
-        video.muted = false;
         await video.play();
         setPlaying(true);
         setStarted(true);
@@ -67,6 +133,7 @@ export function PresentationVideo() {
       } catch {
         setPlaying(false);
         setEntering(false);
+        setAutoplayFailed(true);
       }
       return;
     }
@@ -74,6 +141,8 @@ export function PresentationVideo() {
     video.pause();
     setPlaying(false);
   }
+
+  const showCover = !started && !ended;
 
   return (
     <div className="relative mx-auto w-full max-w-[360px] lg:mx-0 lg:ml-auto lg:max-w-[380px]">
@@ -85,7 +154,8 @@ export function PresentationVideo() {
             src={apresentacaoContent.videoSrc}
             poster={apresentacaoContent.videoPoster}
             playsInline
-            preload="none"
+            muted={muted}
+            preload="metadata"
             controls={started && !ended && !entering}
             onPlay={() => {
               setPlaying(true);
@@ -93,6 +163,11 @@ export function PresentationVideo() {
               setEnded(false);
             }}
             onPause={() => setPlaying(false)}
+            onVolumeChange={() => {
+              const video = videoRef.current;
+              if (!video) return;
+              setMuted(video.muted || video.volume === 0);
+            }}
             onEnded={() => {
               setPlaying(false);
               setEnded(true);
@@ -101,7 +176,7 @@ export function PresentationVideo() {
           />
 
           <AnimatePresence>
-            {!started ? (
+            {showCover ? (
               <motion.div
                 key="entrada"
                 className="absolute inset-0 z-10"
@@ -116,12 +191,15 @@ export function PresentationVideo() {
                 />
                 <button
                   type="button"
-                  onClick={togglePlay}
+                  onClick={() => void playFromStart(true)}
                   className="absolute inset-0 cursor-pointer"
                   aria-label="Reproduzir vídeo"
                 >
                   <span className="ap-play-pulse" style={playHotspot}>
-                    <Play className="size-1/2 translate-x-[6%]" fill="currentColor" />
+                    <Play
+                      className="size-1/2 translate-x-[6%]"
+                      fill="currentColor"
+                    />
                   </span>
                 </button>
               </motion.div>
@@ -143,12 +221,15 @@ export function PresentationVideo() {
                 />
                 <button
                   type="button"
-                  onClick={playFromStart}
+                  onClick={() => void playFromStart(true)}
                   className="absolute inset-0 cursor-pointer"
                   aria-label="Assistir novamente"
                 >
                   <span className="ap-play-pulse" style={playHotspot}>
-                    <Play className="size-1/2 translate-x-[6%]" fill="currentColor" />
+                    <Play
+                      className="size-1/2 translate-x-[6%]"
+                      fill="currentColor"
+                    />
                   </span>
                 </button>
               </motion.div>
@@ -160,7 +241,7 @@ export function PresentationVideo() {
               <motion.button
                 key="pause-overlay"
                 type="button"
-                onClick={togglePlay}
+                onClick={() => void togglePlay()}
                 className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
                 aria-label="Continuar vídeo"
                 initial={{ opacity: 0 }}
@@ -171,6 +252,25 @@ export function PresentationVideo() {
                 <span className="grid size-14 place-items-center rounded-full bg-[color:var(--ap-primary)] text-white">
                   <Play className="ml-0.5 size-6" fill="currentColor" />
                 </span>
+              </motion.button>
+            ) : null}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {started && playing && muted && !ended ? (
+              <motion.button
+                key="unmute"
+                type="button"
+                onClick={unmute}
+                className="absolute top-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/70 px-4 py-2.5 text-sm font-semibold text-white shadow-lg"
+                aria-label="Ativar som"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.25 }}
+              >
+                <VolumeX className="size-4" aria-hidden />
+                Ativar som
               </motion.button>
             ) : null}
           </AnimatePresence>

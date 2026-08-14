@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  LoaderCircle,
-  Send,
-  X,
-} from "lucide-react";
+import { Check, LoaderCircle, Send, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   FormEvent,
@@ -19,11 +11,13 @@ import {
 } from "react";
 
 import { trackMetaLead } from "@/components/seo/meta-pixel";
+import { saveApresentacaoLead } from "@/content/apresentacao/lead-storage";
+import { readUtmsFromWindow } from "@/lib/utm";
 import {
   MAX_SITUACOES,
-  availabilityOptions,
   buildWhatsAppHref,
   incomeOptions,
+  incomeQuestion,
   initialEvaluationAnswers,
   profissaoOptions,
   situationOptions,
@@ -37,19 +31,6 @@ import {
   normalizeSpaces,
 } from "@/lib/form/formatters";
 import { cn } from "@/lib/utils";
-
-const steps = [
-  {
-    eyebrow: "01",
-    title: "Identificação",
-    description: "Dados básicos para a equipe saber quem deve retornar.",
-  },
-  {
-    eyebrow: "02",
-    title: "Seu momento",
-    description: "A principal situação e sua disponibilidade para avaliação.",
-  },
-] as const;
 
 type ContactFieldId = "nome" | "whatsapp" | "cidade";
 type FieldErrors = Partial<Record<ContactFieldId, string>>;
@@ -71,265 +52,38 @@ function validateContactField(fieldId: ContactFieldId, value: string): string {
   return "";
 }
 
-function getStepValidationError(
-  currentStep: number,
-  currentAnswers: EvaluationAnswers,
-) {
-  if (currentStep === 1) {
-    if (currentAnswers.situacoes.length === 0) {
-      return "Selecione pelo menos uma situação que impacta sua qualidade de vida.";
-    }
-    if (!currentAnswers.disponibilidade.trim()) {
-      return "Informe sua disponibilidade para uma avaliação estratégica.";
-    }
-    if (!currentAnswers.renda.trim()) {
-      return "Selecione sua faixa de renda mensal.";
-    }
-  }
-  return "";
-}
-
 const fieldClass =
   "h-12 w-full rounded-lg border border-[color:var(--ap-line)] bg-white px-4 text-[15px] text-[color:var(--ap-ink)] outline-none transition-[border-color,box-shadow] placeholder:text-[color:var(--ap-muted)] focus-visible:border-[color:var(--ap-primary)] focus-visible:shadow-[0_0_0_3px_color-mix(in_srgb,var(--ap-primary)_18%,transparent)]";
-
-const optionItemClass =
-  "flex items-center gap-2.5 bg-white px-3 py-2.5 text-left text-sm text-[color:var(--ap-ink)] hover:bg-[color:var(--ap-cream-2)]";
 
 const fieldErrorClass =
   "border-red-500/70 focus-visible:border-red-500 focus-visible:shadow-[0_0_0_3px_rgb(239_68_68/0.15)]";
 
-type OptionSelectProps = {
-  options: readonly string[];
-  placeholder: string;
-  value: string;
-  outroConfirmed: string;
-  onSelect: (option: string) => void;
-  error?: string;
-  labelId: string;
+const chipClass =
+  "inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-left text-[13px] leading-tight transition-colors disabled:opacity-40";
+
+type ChipProps = {
+  selected: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
 };
 
-function OptionSelect({
-  options,
-  placeholder,
-  value,
-  outroConfirmed,
-  onSelect,
-  error,
-  labelId,
-}: OptionSelectProps) {
-  const [open, setOpen] = useState(false);
-  const displayValue =
-    value === "Outro" && outroConfirmed ? `Outro: ${outroConfirmed}` : value;
-
+function Chip({ selected, disabled, onClick, children }: ChipProps) {
   return (
-    <div>
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-labelledby={labelId}
-        onClick={() => setOpen((prev) => !prev)}
-        className={cn(
-          fieldClass,
-          "flex items-center justify-between text-left",
-          !value && "text-[color:var(--ap-muted)]",
-          error && fieldErrorClass,
-          open && "rounded-b-none border-b-0",
-        )}
-      >
-        <span className="truncate">{displayValue || placeholder}</span>
-        <ChevronDown
-          className={cn(
-            "ml-2 size-4 shrink-0 opacity-50 transition-transform",
-            open && "rotate-180",
-          )}
-          aria-hidden
-        />
-      </button>
-      <AnimatePresence initial={false}>
-        {open ? (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="overflow-hidden rounded-b-lg border border-t-0 border-[color:var(--ap-line)] bg-white"
-            role="listbox"
-            aria-labelledby={labelId}
-          >
-            <div className="grid max-h-56 grid-cols-1 gap-px overflow-y-auto bg-[color:var(--ap-line)] sm:grid-cols-2">
-              {options.map((option) => {
-                const isSelected = value === option;
-                const label =
-                  option === "Outro" && outroConfirmed
-                    ? `Outro: ${outroConfirmed}`
-                    : option;
-                return (
-                  <button
-                    type="button"
-                    key={option}
-                    role="option"
-                    aria-selected={isSelected}
-                    onClick={() => {
-                      if (option !== "Outro") setOpen(false);
-                      onSelect(option);
-                    }}
-                    className={cn(
-                      optionItemClass,
-                      isSelected && "font-medium",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "grid size-4 shrink-0 place-items-center rounded border",
-                        isSelected
-                          ? "border-[color:var(--ap-primary)] bg-[color:var(--ap-primary)] text-white"
-                          : "border-[color:var(--ap-line)]",
-                      )}
-                      aria-hidden
-                    >
-                      {isSelected ? <Check className="size-2.5" /> : null}
-                    </span>
-                    <span className="truncate text-[color:var(--ap-ink)]">
-                      {label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-      {error ? (
-        <p role="alert" className="mt-2 text-xs text-red-600">
-          {error}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-type MultiOptionSelectProps = {
-  options: readonly string[];
-  placeholder: string;
-  value: string[];
-  max: number;
-  outroConfirmed: string;
-  onToggle: (option: string) => void;
-  error?: string;
-  labelId: string;
-};
-
-function MultiOptionSelect({
-  options,
-  placeholder,
-  value,
-  max,
-  outroConfirmed,
-  onToggle,
-  error,
-  labelId,
-}: MultiOptionSelectProps) {
-  const [open, setOpen] = useState(false);
-  const displayValue =
-    value.length === 0
-      ? ""
-      : value.length === 1
-        ? value[0] === "Outro" && outroConfirmed
-          ? `Outro: ${outroConfirmed}`
-          : value[0]
-        : `${value.length} selecionadas`;
-  const limitReached = value.length >= max;
-
-  return (
-    <div>
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-labelledby={labelId}
-        onClick={() => setOpen((prev) => !prev)}
-        className={cn(
-          fieldClass,
-          "flex items-center justify-between text-left",
-          !displayValue && "text-[color:var(--ap-muted)]",
-          error && fieldErrorClass,
-          open && "rounded-b-none border-b-0",
-        )}
-      >
-        <span className="truncate">{displayValue || placeholder}</span>
-        <ChevronDown
-          className={cn(
-            "ml-2 size-4 shrink-0 opacity-50 transition-transform",
-            open && "rotate-180",
-          )}
-          aria-hidden
-        />
-      </button>
-      <AnimatePresence initial={false}>
-        {open ? (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="overflow-hidden rounded-b-lg border border-t-0 border-[color:var(--ap-line)] bg-white"
-            role="listbox"
-            aria-multiselectable="true"
-            aria-labelledby={labelId}
-          >
-            <div className="grid max-h-56 grid-cols-1 gap-px overflow-y-auto bg-[color:var(--ap-line)] sm:grid-cols-2">
-              {options.map((option) => {
-                const isSelected = value.includes(option);
-                const isDisabled = !isSelected && limitReached;
-                const label =
-                  option === "Outro" && outroConfirmed
-                    ? `Outro: ${outroConfirmed}`
-                    : option;
-                return (
-                  <button
-                    type="button"
-                    key={option}
-                    role="option"
-                    aria-selected={isSelected}
-                    disabled={isDisabled}
-                    onClick={() => onToggle(option)}
-                    className={cn(
-                      optionItemClass,
-                      "disabled:opacity-40",
-                      isSelected && "font-medium",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "grid size-4 shrink-0 place-items-center rounded border",
-                        isSelected
-                          ? "border-[color:var(--ap-primary)] bg-[color:var(--ap-primary)] text-white"
-                          : "border-[color:var(--ap-line)]",
-                      )}
-                      aria-hidden
-                    >
-                      {isSelected ? <Check className="size-2.5" /> : null}
-                    </span>
-                    <span className="truncate text-[color:var(--ap-ink)]">
-                      {label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="border-t border-[color:var(--ap-line)] bg-white px-3 py-2 text-xs text-[color:var(--ap-muted)]">
-              Selecione até {max} opções.
-            </p>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-      {error ? (
-        <p role="alert" className="mt-2 text-xs text-red-600">
-          {error}
-        </p>
-      ) : null}
-    </div>
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        chipClass,
+        selected
+          ? "border-[color:var(--ap-primary)] bg-[color:var(--ap-primary)] text-white"
+          : "border-[color:var(--ap-line)] bg-white text-[color:var(--ap-ink)] hover:bg-[color:var(--ap-cream-2)]",
+      )}
+    >
+      {selected ? <Check className="size-3 shrink-0" aria-hidden /> : null}
+      {children}
+    </button>
   );
 }
 
@@ -437,7 +191,6 @@ function OutroDialog({
 }
 
 export function EvaluationForm() {
-  const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -452,8 +205,8 @@ export function EvaluationForm() {
   const visibleCitySuggestions =
     answers.cidade.trim().length >= 2 ? citySuggestions : [];
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [profissaoError, setProfissaoError] = useState("");
   const [situacoesError, setSituacoesError] = useState("");
+  const [rendaError, setRendaError] = useState("");
 
   const [profissaoOutroDialogOpen, setProfissaoOutroDialogOpen] =
     useState(false);
@@ -466,9 +219,16 @@ export function EvaluationForm() {
   const [situacaoOutroConfirmed, setSituacaoOutroConfirmed] = useState("");
   const situacaoOutroInputRef = useRef<HTMLInputElement>(null);
 
-  const progress = useMemo(() => ((step + 1) / steps.length) * 100, [step]);
-  const isLastStep = step === steps.length - 1;
-  const current = steps[step];
+  const progress = useMemo(() => {
+    const checks = [
+      !validateContactField("nome", answers.nome),
+      !validateContactField("whatsapp", answers.whatsapp),
+      !validateContactField("cidade", answers.cidade),
+      answers.situacoes.length > 0,
+      Boolean(answers.renda.trim()),
+    ];
+    return (checks.filter(Boolean).length / checks.length) * 100;
+  }, [answers]);
 
   useEffect(() => {
     if (!profissaoOutroDialogOpen) return;
@@ -488,10 +248,7 @@ export function EvaluationForm() {
 
   useEffect(() => {
     const query = answers.cidade.trim();
-    if (query.length < 2) {
-      setCitySuggestions([]);
-      return;
-    }
+    if (query.length < 2) return;
 
     const controller = new AbortController();
     const timeout = window.setTimeout(async () => {
@@ -552,46 +309,84 @@ export function EvaluationForm() {
     }));
   }
 
+  function toggleSituacao(option: string) {
+    setSituacoesError("");
+    setSubmitError("");
+    if (option === "Outro") {
+      const already = answers.situacoes.includes("Outro");
+      if (already) {
+        setSituacaoOutroConfirmed("");
+        setAnswers((currentAnswers) => ({
+          ...currentAnswers,
+          situacoes: currentAnswers.situacoes.filter((item) => item !== "Outro"),
+        }));
+        return;
+      }
+      setSituacaoOutroDraft(situacaoOutroConfirmed);
+      setSituacaoOutroDialogOpen(true);
+      setAnswers((currentAnswers) => {
+        if (currentAnswers.situacoes.includes("Outro")) return currentAnswers;
+        if (currentAnswers.situacoes.length >= MAX_SITUACOES) {
+          return currentAnswers;
+        }
+        return {
+          ...currentAnswers,
+          situacoes: [...currentAnswers.situacoes, "Outro"],
+        };
+      });
+      return;
+    }
+
+    setAnswers((currentAnswers) => {
+      if (currentAnswers.situacoes.includes(option)) {
+        return {
+          ...currentAnswers,
+          situacoes: currentAnswers.situacoes.filter((item) => item !== option),
+        };
+      }
+      if (currentAnswers.situacoes.length >= MAX_SITUACOES) {
+        return currentAnswers;
+      }
+      return {
+        ...currentAnswers,
+        situacoes: [...currentAnswers.situacoes, option],
+      };
+    });
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitError("");
     setSituacoesError("");
+    setRendaError("");
 
-    if (step === 0) {
-      const fields: ContactFieldId[] = ["nome", "whatsapp", "cidade"];
-      const newErrors: FieldErrors = {};
-      let hasErrors = false;
+    const fields: ContactFieldId[] = ["nome", "whatsapp", "cidade"];
+    const newErrors: FieldErrors = {};
+    let hasErrors = false;
 
-      for (const fieldId of fields) {
-        const error = validateContactField(fieldId, answers[fieldId]);
-        if (error) {
-          newErrors[fieldId] = error;
-          hasErrors = true;
-        }
-      }
-      setFieldErrors(newErrors);
-
-      if (!answers.profissao.trim()) {
-        setProfissaoError("Selecione sua profissão para continuar.");
+    for (const fieldId of fields) {
+      const error = validateContactField(fieldId, answers[fieldId]);
+      if (error) {
+        newErrors[fieldId] = error;
         hasErrors = true;
       }
+    }
+    setFieldErrors(newErrors);
 
-      if (hasErrors) return;
-      setStep(1);
-      return;
+    if (answers.situacoes.length === 0) {
+      setSituacoesError(
+        "Selecione pelo menos uma situação que impacta sua qualidade de vida.",
+      );
+      hasErrors = true;
     }
 
-    const validationError = getStepValidationError(step, answers);
-    if (validationError) {
-      if (answers.situacoes.length === 0) {
-        setSituacoesError(validationError);
-      }
-      setSubmitError(validationError);
-      return;
+    if (!answers.renda.trim()) {
+      setRendaError("Selecione o valor mensal que faria sentido para você.");
+      hasErrors = true;
     }
 
-    if (!isLastStep) {
-      setStep((currentStep) => Math.min(currentStep + 1, steps.length - 1));
+    if (hasErrors) {
+      setSubmitError("Preencha os campos obrigatórios para enviar.");
       return;
     }
 
@@ -606,7 +401,6 @@ export function EvaluationForm() {
       situacoes: answers.situacoes.map((s) =>
         s === "Outro" && situacaoOutroConfirmed ? situacaoOutroConfirmed : s,
       ),
-      disponibilidade: answers.disponibilidade,
       renda: answers.renda,
     };
 
@@ -616,7 +410,10 @@ export function EvaluationForm() {
       const response = await fetch("/api/avaliacao", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payloadAnswers),
+        body: JSON.stringify({
+          ...payloadAnswers,
+          ...readUtmsFromWindow(),
+        }),
       });
 
       if (!response.ok) {
@@ -629,10 +426,15 @@ export function EvaluationForm() {
       }
 
       trackMetaLead();
+      saveApresentacaoLead({
+        name: payloadAnswers.nome,
+        phone: payloadAnswers.whatsapp,
+        profession: payloadAnswers.profissao,
+        symptom: payloadAnswers.situacoes.join(", "),
+      });
       setSubmittedAnswers(payloadAnswers);
       setSubmitted(true);
 
-      // Dar tempo do Meta Pixel flushar o Lead antes de sair da página.
       const href = buildWhatsAppHref(payloadAnswers);
       window.setTimeout(() => {
         window.location.assign(href);
@@ -680,254 +482,238 @@ export function EvaluationForm() {
       >
         <div className="flex items-center justify-between gap-3">
           <span className="text-sm text-[color:var(--ap-muted)]">
-            {current.eyebrow} / 0{steps.length}
+            Avaliação
           </span>
           <span className="rounded-full border border-[color:var(--ap-line)] px-2.5 py-1 text-xs text-[color:var(--ap-muted)]">
             {Math.round(progress)}%
           </span>
         </div>
-        <h3 className="mt-3 text-2xl font-medium text-[color:var(--ap-ink)]">
-          {current.title}
-        </h3>
-        <p className="mt-2 text-sm text-[color:var(--ap-muted)]">
-          {current.description}
-        </p>
-        <div className="mt-5 h-px bg-[color:var(--ap-line)]">
+        <div className="mt-4 h-px bg-[color:var(--ap-line)]">
           <div
             className="h-px bg-[color:var(--ap-primary)] transition-[width] duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        <div className="mt-6 space-y-4">
-          {step === 0 ? (
-            <>
-              {(
-                [
-                  {
-                    id: "nome" as const,
-                    label: "Nome",
-                    placeholder: "Seu nome",
-                    type: "text",
-                    autoComplete: "name",
-                  },
-                  {
-                    id: "whatsapp" as const,
-                    label: "WhatsApp",
-                    placeholder: "(00) 00000-0000",
-                    type: "tel",
-                    autoComplete: "tel",
-                  },
-                  {
-                    id: "cidade" as const,
-                    label: "Cidade",
-                    placeholder: "Onde você mora",
-                    type: "text",
-                    autoComplete: "address-level2",
-                  },
-                ] as const
-              ).map((field) => {
-                const error = fieldErrors[field.id];
-                return (
-                  <div key={field.id}>
-                    <label
-                      htmlFor={`ap-${field.id}`}
-                      className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
-                    >
-                      {field.label}
-                    </label>
-                    <input
-                      id={`ap-${field.id}`}
-                      type={field.type}
-                      autoComplete={field.autoComplete}
-                      inputMode={
-                        field.id === "whatsapp" ? "numeric" : undefined
-                      }
-                      maxLength={field.id === "whatsapp" ? 16 : undefined}
-                      list={
-                        field.id === "cidade" ? "city-suggestions" : undefined
-                      }
-                      placeholder={field.placeholder}
-                      value={answers[field.id]}
-                      onChange={(e) => updateField(field.id, e.target.value)}
-                      onBlur={(e) => handleBlur(field.id, e.target.value)}
-                      aria-invalid={!!error}
-                      className={cn(fieldClass, error && fieldErrorClass)}
-                    />
-                    {error ? (
-                      <p role="alert" className="mt-2 text-xs text-red-600">
-                        {error}
-                      </p>
-                    ) : null}
-                  </div>
-                );
-              })}
+        <section className="mt-6">
+          <h3 className="text-lg font-medium text-[color:var(--ap-ink)]">
+            Seus dados
+          </h3>
+          <p className="mt-1 text-sm text-[color:var(--ap-muted)]">
+            Dados básicos para a equipe saber quem deve retornar.
+          </p>
 
-              <datalist id="city-suggestions">
-                {visibleCitySuggestions.map((city) => (
-                  <option key={city.id} value={city.label} />
-                ))}
-              </datalist>
-              <div>
-                <label
-                  id="ap-profissao-label"
-                  className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
-                >
-                  Profissão
-                </label>
-                <OptionSelect
-                  options={profissaoOptions}
-                  placeholder="Selecione sua profissão"
-                  value={answers.profissao}
-                  outroConfirmed={profissaoOutroConfirmed}
-                  labelId="ap-profissao-label"
-                  error={profissaoError}
-                  onSelect={(option) => {
-                    setProfissaoError("");
-                    if (option === "Outro") {
-                      setProfissaoOutroDraft(profissaoOutroConfirmed);
-                      setProfissaoOutroDialogOpen(true);
-                      setAnswers((currentAnswers) => ({
-                        ...currentAnswers,
-                        profissao: "Outro",
-                      }));
-                      return;
-                    }
-                    setProfissaoOutroConfirmed("");
-                    setAnswers((currentAnswers) => ({
-                      ...currentAnswers,
-                      profissao: option,
-                    }));
-                  }}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                <label
-                  id="ap-situacoes-label"
-                  className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
-                >
-                  Qual dessas situações mais impacta sua qualidade de vida?{" "}
-                  <span className="font-normal text-[color:var(--ap-muted)]">
-                    (até {MAX_SITUACOES})
-                  </span>
-                </label>
-                <MultiOptionSelect
-                  options={situationOptions}
-                  placeholder="Selecione as situações"
-                  value={answers.situacoes}
-                  max={MAX_SITUACOES}
-                  outroConfirmed={situacaoOutroConfirmed}
-                  labelId="ap-situacoes-label"
-                  error={situacoesError}
-                  onToggle={(option) => {
-                    setSituacoesError("");
-                    setSubmitError("");
-                    if (option === "Outro") {
-                      const already = answers.situacoes.includes("Outro");
-                      if (already) {
-                        setSituacaoOutroConfirmed("");
-                        setAnswers((currentAnswers) => ({
-                          ...currentAnswers,
-                          situacoes: currentAnswers.situacoes.filter(
-                            (item) => item !== "Outro",
-                          ),
+          <div className="mt-4 space-y-4">
+            {(
+              [
+                {
+                  id: "nome" as const,
+                  label: "Nome",
+                  placeholder: "Seu nome",
+                  type: "text",
+                  autoComplete: "name",
+                },
+                {
+                  id: "whatsapp" as const,
+                  label: "WhatsApp",
+                  placeholder: "(00) 00000-0000",
+                  type: "tel",
+                  autoComplete: "tel",
+                },
+                {
+                  id: "cidade" as const,
+                  label: "Cidade",
+                  placeholder: "Onde você mora",
+                  type: "text",
+                  autoComplete: "address-level2",
+                },
+              ] as const
+            ).map((field) => {
+              const error = fieldErrors[field.id];
+              return (
+                <div key={field.id}>
+                  <label
+                    htmlFor={`ap-${field.id}`}
+                    className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
+                  >
+                    {field.label}
+                  </label>
+                  <input
+                    id={`ap-${field.id}`}
+                    type={field.type}
+                    autoComplete={field.autoComplete}
+                    inputMode={field.id === "whatsapp" ? "numeric" : undefined}
+                    maxLength={field.id === "whatsapp" ? 16 : undefined}
+                    list={field.id === "cidade" ? "city-suggestions" : undefined}
+                    placeholder={field.placeholder}
+                    value={answers[field.id]}
+                    onChange={(e) => updateField(field.id, e.target.value)}
+                    onBlur={(e) => handleBlur(field.id, e.target.value)}
+                    aria-invalid={!!error}
+                    className={cn(fieldClass, error && fieldErrorClass)}
+                  />
+                  {error ? (
+                    <p role="alert" className="mt-2 text-xs text-red-600">
+                      {error}
+                    </p>
+                  ) : null}
+                </div>
+              );
+            })}
+
+            <datalist id="city-suggestions">
+              {visibleCitySuggestions.map((city) => (
+                <option key={city.id} value={city.label} />
+              ))}
+            </datalist>
+
+            <div>
+              <p
+                id="ap-profissao-label"
+                className="mb-2 text-sm font-medium text-[color:var(--ap-ink)]"
+              >
+                Profissão{" "}
+                <span className="font-normal text-[color:var(--ap-muted)]">
+                  (opcional)
+                </span>
+              </p>
+              <div
+                className="flex flex-wrap gap-2"
+                role="group"
+                aria-labelledby="ap-profissao-label"
+              >
+                {profissaoOptions.map((option) => {
+                  const selected = answers.profissao === option;
+                  const label =
+                    option === "Outro" && profissaoOutroConfirmed
+                      ? `Outro: ${profissaoOutroConfirmed}`
+                      : option;
+                  return (
+                    <Chip
+                      key={option}
+                      selected={selected}
+                      onClick={() => {
+                        if (option === "Outro") {
+                          if (selected) {
+                            setProfissaoOutroConfirmed("");
+                            setAnswers((current) => ({
+                              ...current,
+                              profissao: "",
+                            }));
+                            return;
+                          }
+                          setProfissaoOutroDraft(profissaoOutroConfirmed);
+                          setProfissaoOutroDialogOpen(true);
+                          setAnswers((current) => ({
+                            ...current,
+                            profissao: "Outro",
+                          }));
+                          return;
+                        }
+                        setProfissaoOutroConfirmed("");
+                        setAnswers((current) => ({
+                          ...current,
+                          profissao: current.profissao === option ? "" : option,
                         }));
-                        return;
-                      }
-                      setSituacaoOutroDraft(situacaoOutroConfirmed);
-                      setSituacaoOutroDialogOpen(true);
-                      setAnswers((currentAnswers) => {
-                        if (currentAnswers.situacoes.includes("Outro")) {
-                          return currentAnswers;
-                        }
-                        if (currentAnswers.situacoes.length >= MAX_SITUACOES) {
-                          return currentAnswers;
-                        }
-                        return {
-                          ...currentAnswers,
-                          situacoes: [...currentAnswers.situacoes, "Outro"],
-                        };
-                      });
-                      return;
-                    }
-
-                    setAnswers((currentAnswers) => {
-                      if (currentAnswers.situacoes.includes(option)) {
-                        return {
-                          ...currentAnswers,
-                          situacoes: currentAnswers.situacoes.filter(
-                            (item) => item !== option,
-                          ),
-                        };
-                      }
-                      if (currentAnswers.situacoes.length >= MAX_SITUACOES) {
-                        return currentAnswers;
-                      }
-                      return {
-                        ...currentAnswers,
-                        situacoes: [...currentAnswers.situacoes, option],
-                      };
-                    });
-                  }}
-                />
+                      }}
+                    >
+                      {label}
+                    </Chip>
+                  );
+                })}
               </div>
+            </div>
+          </div>
+        </section>
 
-              <div>
-                <label
-                  id="ap-disponibilidade-label"
-                  className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
-                >
-                  Disponibilidade
-                </label>
-                <p className="mb-2 text-sm text-[color:var(--ap-muted)]">
-                  Caso seu perfil seja compatível com nossa metodologia, você
-                  teria disponibilidade para uma avaliação estratégica?
+        <section className="mt-8 border-t border-[color:var(--ap-line)] pt-6">
+          <h3 className="text-lg font-medium text-[color:var(--ap-ink)]">
+            Seu momento
+          </h3>
+          <p className="mt-1 text-sm text-[color:var(--ap-muted)]">
+            A principal situação e o investimento mensal que faz sentido agora.
+          </p>
+
+          <div className="mt-4 space-y-5">
+            <div>
+              <p
+                id="ap-situacoes-label"
+                className="mb-2 text-sm font-medium text-[color:var(--ap-ink)]"
+              >
+                Qual dessas situações mais impacta sua qualidade de vida?{" "}
+                <span className="font-normal text-[color:var(--ap-muted)]">
+                  (até {MAX_SITUACOES})
+                </span>
+              </p>
+              <div
+                className="flex flex-wrap gap-2"
+                role="group"
+                aria-labelledby="ap-situacoes-label"
+              >
+                {situationOptions.map((option) => {
+                  const selected = answers.situacoes.includes(option);
+                  const label =
+                    option === "Outro" && situacaoOutroConfirmed
+                      ? `Outro: ${situacaoOutroConfirmed}`
+                      : option;
+                  return (
+                    <Chip
+                      key={option}
+                      selected={selected}
+                      disabled={
+                        !selected && answers.situacoes.length >= MAX_SITUACOES
+                      }
+                      onClick={() => toggleSituacao(option)}
+                    >
+                      {label}
+                    </Chip>
+                  );
+                })}
+              </div>
+              {situacoesError ? (
+                <p role="alert" className="mt-2 text-xs text-red-600">
+                  {situacoesError}
                 </p>
-                <OptionSelect
-                  options={availabilityOptions}
-                  placeholder="Selecione sua disponibilidade"
-                  value={answers.disponibilidade}
-                  outroConfirmed=""
-                  labelId="ap-disponibilidade-label"
-                  onSelect={(option) => {
-                    setSubmitError("");
-                    setAnswers((currentAnswers) => ({
-                      ...currentAnswers,
-                      disponibilidade: option,
-                    }));
-                  }}
-                />
-              </div>
+              ) : null}
+            </div>
 
-              <div>
-                <label
-                  id="ap-renda-label"
-                  className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
-                >
-                  Pensando na sua saúde e qualidade de vida, qual faixa de
-                  investimento faz sentido para você neste momento?
-                </label>
-                <OptionSelect
-                  options={incomeOptions}
-                  placeholder="Selecione a faixa de investimento"
-                  value={answers.renda}
-                  outroConfirmed=""
-                  labelId="ap-renda-label"
-                  onSelect={(option) => {
-                    setSubmitError("");
-                    setAnswers((currentAnswers) => ({
-                      ...currentAnswers,
-                      renda: option,
-                    }));
-                  }}
-                />
+            <div>
+              <p
+                id="ap-renda-label"
+                className="mb-2 text-sm font-medium text-[color:var(--ap-ink)]"
+              >
+                {incomeQuestion}
+              </p>
+              <div
+                className="flex flex-wrap gap-2"
+                role="radiogroup"
+                aria-labelledby="ap-renda-label"
+              >
+                {incomeOptions.map((option) => (
+                  <Chip
+                    key={option}
+                    selected={answers.renda === option}
+                    onClick={() => {
+                      setRendaError("");
+                      setSubmitError("");
+                      setAnswers((current) => ({
+                        ...current,
+                        renda: current.renda === option ? "" : option,
+                      }));
+                    }}
+                  >
+                    {option}
+                  </Chip>
+                ))}
               </div>
-            </>
-          )}
-        </div>
+              {rendaError ? (
+                <p role="alert" className="mt-2 text-xs text-red-600">
+                  {rendaError}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </section>
 
         {submitError ? (
           <p role="alert" className="mt-4 text-sm text-red-600">
@@ -935,20 +721,7 @@ export function EvaluationForm() {
           </p>
         ) : null}
 
-        <div className="mt-6 flex items-center gap-3 border-t border-[color:var(--ap-line)] pt-5">
-          {step > 0 ? (
-            <button
-              type="button"
-              onClick={() => {
-                setSubmitError("");
-                setStep(0);
-              }}
-              className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full border border-[color:var(--ap-line)] px-5 text-sm font-medium text-[color:var(--ap-muted)]"
-            >
-              <ChevronLeft className="size-4" aria-hidden />
-              Voltar
-            </button>
-          ) : null}
+        <div className="mt-6 flex items-center border-t border-[color:var(--ap-line)] pt-5">
           <button
             type="submit"
             disabled={submitting}
@@ -959,15 +732,10 @@ export function EvaluationForm() {
                 <LoaderCircle className="size-4 animate-spin" aria-hidden />
                 Enviando…
               </>
-            ) : isLastStep ? (
+            ) : (
               <>
                 Enviar respostas
                 <Send className="size-4" aria-hidden />
-              </>
-            ) : (
-              <>
-                Continuar
-                <ChevronRight className="size-4" aria-hidden />
               </>
             )}
           </button>

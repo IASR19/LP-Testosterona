@@ -20,6 +20,7 @@ export const apresentacaoContent = {
   whatsappPhone: "553531122929",
   whatsappQuickHref:
     "https://api.whatsapp.com/send?phone=553531122929&text=Ol%C3%A1%2C%20vim%20pela%20apresenta%C3%A7%C3%A3o%20da%20Grape%20Clinic%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o!",
+  atendimentoHref: "/apresentacao/atendimento",
   siteHref: "https://www.grapeclinic.com.br/",
   hubHref: "https://www.grapeclinic.com.br/hub",
   mapsHref:
@@ -102,13 +103,48 @@ export const apresentacaoContent = {
 
 export const MAX_SITUACOES = 3;
 
+export const incomeQuestion =
+  "Pensando em um acompanhamento contínuo, qual valor mensal faria sentido para você investir no seu cuidado?";
+
 export const incomeOptions = [
-  "Até R$ 10.000",
-  "R$ 10.000 a R$ 20.000",
-  "R$ 20.000 a R$ 40.000",
-  "R$ 40.000 a R$ 80.000",
-  "Acima de R$ 80.000",
+  "Até R$ 1.000",
+  "R$ 1.000 – R$ 2.000",
+  "R$ 2.000 – R$ 4.000",
+  "R$ 4.000 – R$ 6.000",
+  "Acima de R$ 6.000",
 ] as const;
+
+export type IncomeOption = (typeof incomeOptions)[number];
+
+export const incomeIcpByOption: Record<
+  IncomeOption,
+  { rendaEstimada: string; leitura: string }
+> = {
+  "Até R$ 1.000": {
+    rendaEstimada: "Até R$ 10.000",
+    leitura: "Abaixo da entrada da esteira — não elegível",
+  },
+  "R$ 1.000 – R$ 2.000": {
+    rendaEstimada: "R$ 10.000 – R$ 20.000",
+    leitura: "Elegível para Plano Nutri",
+  },
+  "R$ 2.000 – R$ 4.000": {
+    rendaEstimada: "R$ 20.000 – R$ 40.000",
+    leitura: "Elegível para Vigilância sem tirzepatida",
+  },
+  "R$ 4.000 – R$ 6.000": {
+    rendaEstimada: "R$ 40.000 – R$ 60.000",
+    leitura: "Elegível para Vigilância",
+  },
+  "Acima de R$ 6.000": {
+    rendaEstimada: "Acima de R$ 60.000",
+    leitura: "Topo da esteira — Vigilância trimestral",
+  },
+};
+
+export function resolveIncomeIcp(renda: string) {
+  return incomeIcpByOption[renda as IncomeOption] ?? null;
+}
 
 export const situationOptions = [
   "Falta de energia",
@@ -120,8 +156,6 @@ export const situationOptions = [
   "Inflamação e endometriose",
   "Outro",
 ] as const;
-
-export const availabilityOptions = ["Sim", "Talvez", "Não"] as const;
 
 export const profissaoOptions = [
   "Médico(a)",
@@ -144,7 +178,6 @@ export type EvaluationAnswers = {
   cidade: string;
   profissao: string;
   situacoes: string[];
-  disponibilidade: string;
   renda: string;
 };
 
@@ -154,13 +187,13 @@ export const initialEvaluationAnswers: EvaluationAnswers = {
   cidade: "",
   profissao: "",
   situacoes: [],
-  disponibilidade: "",
   renda: "",
 };
 
 export function buildWhatsAppHref(answers: EvaluationAnswers) {
   const situacoes =
     answers.situacoes.length > 0 ? answers.situacoes.join(", ") : "—";
+  const icp = resolveIncomeIcp(answers.renda);
 
   const text = [
     "Olá! Vim pela apresentação da Grape Clinic e gostaria de agendar uma avaliação.",
@@ -170,8 +203,9 @@ export function buildWhatsAppHref(answers: EvaluationAnswers) {
     `Cidade: ${answers.cidade}`,
     `Profissão: ${answers.profissao || "—"}`,
     `Situações: ${situacoes}`,
-    `Disponibilidade: ${answers.disponibilidade}`,
-    `Investimento: ${answers.renda}`,
+    `Investimento mensal: ${answers.renda}`,
+    `Renda estimada: ${icp?.rendaEstimada ?? "—"}`,
+    `ICP: ${icp?.leitura ?? "—"}`,
   ].join("\n");
 
   return `https://api.whatsapp.com/send?phone=${apresentacaoContent.whatsappPhone}&text=${encodeURIComponent(text)}`;

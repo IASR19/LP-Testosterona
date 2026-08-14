@@ -8,6 +8,7 @@ import { ChatBubble } from "@/components/chat/chat-bubble";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChoiceButtons } from "@/components/chat/choice-buttons";
 import { EbookFinalScreen } from "@/components/final/ebook-final-screen";
+import { WhatsAppFinalScreen } from "@/components/final/whatsapp-final-screen";
 import {
   getStepById,
   resolveMessages,
@@ -15,6 +16,7 @@ import {
   type LeadAnswers,
 } from "@/content/types";
 import { formatBrazilianPhone } from "@/lib/form/formatters";
+import { readApresentacaoLead } from "@/content/apresentacao/lead-storage";
 
 type VisibleMessage = {
   id: string;
@@ -27,9 +29,15 @@ const AUTO_ADVANCE_MS = 1600;
 const FIRST_MESSAGE_DELAY_MS = 500;
 
 export function LeadChat() {
-  const { config, chatSteps, initialAnswers } = useCampaign();
-  const [answers, setAnswers] = useState<LeadAnswers>(initialAnswers);
-  const [stepId, setStepId] = useState("intro");
+  const campaign = useCampaign();
+  const { config, chatSteps, initialAnswers, finish } = campaign;
+  const [answers, setAnswers] = useState<LeadAnswers>(() =>
+    finish === "whatsapp" ? readApresentacaoLead() : initialAnswers,
+  );
+  const [stepId, setStepId] = useState(() => {
+    if (finish !== "whatsapp") return "intro";
+    return answers.name ? "resume" : "intro";
+  });
   const [messages, setMessages] = useState<VisibleMessage[]>([]);
   const [revealing, setRevealing] = useState(true);
   const [inputValue, setInputValue] = useState("");
@@ -209,6 +217,9 @@ export function LeadChat() {
   }
 
   if (finished) {
+    if (finish === "whatsapp") {
+      return <WhatsAppFinalScreen answers={answers} />;
+    }
     return <EbookFinalScreen answers={answers} />;
   }
 
@@ -229,19 +240,27 @@ export function LeadChat() {
         : "text";
 
   return (
-    <div className="relative mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[#1a1512]">
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <Image
-          src={config.chatBackgroundSrc}
-          alt=""
-          fill
-          priority
-          sizes="(max-width: 448px) 100vw, 448px"
-          className="object-cover object-center scale-110 blur-[2.5px]"
-        />
-        <div className="absolute inset-0 bg-[#1a1512]/62" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a1512]/35 via-transparent to-[#1a1512]/75" />
-      </div>
+    <div
+      className={
+        finish === "whatsapp"
+          ? "apresentacao-lp relative mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[color:var(--ap-cream)]"
+          : "relative mx-auto flex h-dvh w-full max-w-md flex-col overflow-hidden bg-[#1a1512]"
+      }
+    >
+      {config.chatBackgroundSrc ? (
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <Image
+            src={config.chatBackgroundSrc}
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 448px) 100vw, 448px"
+            className="object-cover object-center scale-110 blur-[2.5px]"
+          />
+          <div className="absolute inset-0 bg-[#1a1512]/62" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1a1512]/35 via-transparent to-[#1a1512]/75" />
+        </div>
+      ) : null}
 
       <div
         ref={scrollRef}

@@ -6,6 +6,7 @@ export type LeadAnswers = {
   diagnosis: string;
   symptom: string;
   wantsConsultation: string;
+  convenio: string;
 };
 
 export type ChoiceOption = {
@@ -58,7 +59,8 @@ export type SiteMeta = {
 };
 
 export type Campaign = {
-  slug: "endometriose" | "testosterona";
+  slug: "endometriose" | "testosterona" | "apresentacao";
+  finish: "ebook" | "whatsapp";
   config: LeadMagnetConfig;
   siteMeta: SiteMeta;
   chatSteps: ChatStep[];
@@ -73,6 +75,7 @@ export const emptyAnswers: LeadAnswers = {
   diagnosis: "",
   symptom: "",
   wantsConsultation: "",
+  convenio: "",
 };
 
 export function getStepById(steps: ChatStep[], id: string) {
@@ -94,4 +97,30 @@ export function resolveNextStep(
 ): string | null {
   if (!step.next) return null;
   return typeof step.next === "function" ? step.next(answers) : step.next;
+}
+
+export function firstOpenStep(
+  steps: ChatStep[],
+  answers: LeadAnswers,
+  startId = "intro",
+) {
+  let id: string | null = startId;
+  const seen = new Set<string>();
+
+  while (id && !seen.has(id)) {
+    seen.add(id);
+    const step = getStepById(steps, id);
+    if (!step) return startId;
+
+    if (step.input) {
+      const current = answers[step.input.field]?.trim();
+      if (!current) return step.id;
+    }
+
+    const next = resolveNextStep(step, answers);
+    if (!next) return step.id;
+    id = next;
+  }
+
+  return startId;
 }

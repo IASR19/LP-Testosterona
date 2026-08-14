@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { resolveIncomeIcp } from "@/content/apresentacao";
+import { UTM_KEYS, type UtmKey } from "@/lib/utm";
+
 const GRAPEGEST_URL = "https://www.grapegest.com.br/api/webhooks/leads";
 const SOURCE = "lp-grapeclinic";
 
@@ -10,14 +13,18 @@ type EvaluationLeadPayload = {
   profissao?: unknown;
   renda?: unknown;
   situacoes?: unknown;
-  disponibilidade?: unknown;
+  utm_source?: unknown;
+  utm_medium?: unknown;
+  utm_campaign?: unknown;
+  utm_content?: unknown;
+  utm_term?: unknown;
+  utm_id?: unknown;
 };
 
 const requiredStringFields = [
   "nome",
   "whatsapp",
   "cidade",
-  "disponibilidade",
   "renda",
 ] as const;
 
@@ -85,18 +92,35 @@ export async function POST(request: Request) {
     ? (payload.situacoes as string[]).filter(isFilledString)
     : [];
 
+  const parcela = (payload.renda as string).trim();
+  const icp = resolveIncomeIcp(parcela);
+
   const grapegestPayload: Record<string, string> = {
     name: (payload.nome as string).trim(),
     phone: digitsOnly((payload.whatsapp as string).trim()),
     localizacao: (payload.cidade as string).trim(),
     dor_principal: situacoes.join(", "),
-    disponibilidade: (payload.disponibilidade as string).trim(),
-    valor_disposto: (payload.renda as string).trim(),
+    valor_disposto: icp
+      ? `${parcela} | renda est. ${icp.rendaEstimada} | ${icp.leitura}`
+      : parcela,
+    parcela_mensal: parcela,
     source: SOURCE,
   };
 
+  if (icp) {
+    grapegestPayload.renda_estimada = icp.rendaEstimada;
+    grapegestPayload.icp = icp.leitura;
+  }
+
   if (isFilledString(payload.profissao)) {
     grapegestPayload.profissao = payload.profissao.trim();
+  }
+
+  for (const field of UTM_KEYS) {
+    const value = payload[field as UtmKey];
+    if (isFilledString(value)) {
+      grapegestPayload[field] = value.trim();
+    }
   }
 
   try {

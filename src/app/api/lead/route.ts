@@ -5,6 +5,7 @@ const GRAPEGEST_URL = "https://www.grapegest.com.br/api/webhooks/leads";
 const CAMPAIGN_SOURCES = {
   testosterona: "lp-testosterona",
   endometriose: "lp-endometriose",
+  apresentacao: "lp-grapeclinic-whatsapp",
 } as const;
 
 type CampaignSlug = keyof typeof CAMPAIGN_SOURCES;
@@ -18,6 +19,7 @@ type LeadPayload = {
   diagnosis?: unknown;
   symptom?: unknown;
   wantsConsultation?: unknown;
+  convenio?: unknown;
   utm_source?: unknown;
   utm_medium?: unknown;
   utm_campaign?: unknown;
@@ -42,7 +44,11 @@ function isFilledString(value: unknown): value is string {
 }
 
 function isCampaignSlug(value: unknown): value is CampaignSlug {
-  return value === "testosterona" || value === "endometriose";
+  return (
+    value === "testosterona" ||
+    value === "endometriose" ||
+    value === "apresentacao"
+  );
 }
 
 function digitsOnly(value: string) {
@@ -126,6 +132,10 @@ export async function POST(request: Request) {
 
   if (isFilledString(payload.diagnosis)) {
     grapegestPayload.diagnosis = payload.diagnosis.trim();
+  }
+
+  if (isFilledString(payload.convenio)) {
+    grapegestPayload.convenio = payload.convenio.trim();
   }
 
   for (const field of optionalUtmFields) {
