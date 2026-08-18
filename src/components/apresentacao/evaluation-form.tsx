@@ -23,11 +23,13 @@ import {
   situationOptions,
   type EvaluationAnswers,
 } from "@/content/apresentacao";
+import { PhoneInput } from "@/components/form/phone-input";
 import {
+  BRAZIL_PHONE_PLACEHOLDER,
+  brazilianPhoneValidationError,
   formatBrazilianPhone,
   formatCityName,
   formatPersonName,
-  isValidBrazilianPhone,
   normalizeSpaces,
 } from "@/lib/form/formatters";
 import { cn } from "@/lib/utils";
@@ -40,9 +42,7 @@ function validateContactField(fieldId: ContactFieldId, value: string): string {
     return normalizeSpaces(value) ? "" : "Informe seu nome.";
   }
   if (fieldId === "whatsapp") {
-    return isValidBrazilianPhone(value)
-      ? ""
-      : "Informe um WhatsApp válido com DDD.";
+    return brazilianPhoneValidationError(value) ?? "";
   }
   const v = normalizeSpaces(value);
   if (!v) return "Informe sua cidade.";
@@ -516,9 +516,9 @@ export function EvaluationForm() {
                 {
                   id: "whatsapp" as const,
                   label: "WhatsApp",
-                  placeholder: "(00) 00000-0000",
+                  placeholder: BRAZIL_PHONE_PLACEHOLDER,
                   type: "tel",
-                  autoComplete: "tel",
+                  autoComplete: "tel-national",
                 },
                 {
                   id: "cidade" as const,
@@ -537,21 +537,43 @@ export function EvaluationForm() {
                     className="mb-1.5 block text-sm font-medium text-[color:var(--ap-ink)]"
                   >
                     {field.label}
+                    {field.id === "whatsapp" ? (
+                      <span className="ml-1.5 font-normal text-[color:var(--ap-muted)]">
+                        · Brasil +55 já selecionado
+                      </span>
+                    ) : null}
                   </label>
-                  <input
-                    id={`ap-${field.id}`}
-                    type={field.type}
-                    autoComplete={field.autoComplete}
-                    inputMode={field.id === "whatsapp" ? "numeric" : undefined}
-                    maxLength={field.id === "whatsapp" ? 16 : undefined}
-                    list={field.id === "cidade" ? "city-suggestions" : undefined}
-                    placeholder={field.placeholder}
-                    value={answers[field.id]}
-                    onChange={(e) => updateField(field.id, e.target.value)}
-                    onBlur={(e) => handleBlur(field.id, e.target.value)}
-                    aria-invalid={!!error}
-                    className={cn(fieldClass, error && fieldErrorClass)}
-                  />
+                  {field.id === "whatsapp" ? (
+                    <PhoneInput
+                      id={`ap-${field.id}`}
+                      value={answers.whatsapp}
+                      placeholder={field.placeholder}
+                      autoComplete={field.autoComplete}
+                      aria-invalid={!!error}
+                      onChange={(value) => updateField("whatsapp", value)}
+                      onBlur={(e) => handleBlur("whatsapp", e.target.value)}
+                      className={cn(
+                        fieldClass,
+                        "px-0 focus-within:border-[color:var(--ap-primary)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--ap-primary)_18%,transparent)]",
+                        error &&
+                          "border-red-500/70 focus-within:border-red-500 focus-within:shadow-[0_0_0_3px_rgb(239_68_68/0.15)]",
+                      )}
+                      inputClassName="placeholder:text-[color:var(--ap-muted)] text-[color:var(--ap-ink)]"
+                    />
+                  ) : (
+                    <input
+                      id={`ap-${field.id}`}
+                      type={field.type}
+                      autoComplete={field.autoComplete}
+                      list={field.id === "cidade" ? "city-suggestions" : undefined}
+                      placeholder={field.placeholder}
+                      value={answers[field.id]}
+                      onChange={(e) => updateField(field.id, e.target.value)}
+                      onBlur={(e) => handleBlur(field.id, e.target.value)}
+                      aria-invalid={!!error}
+                      className={cn(fieldClass, error && fieldErrorClass)}
+                    />
+                  )}
                   {error ? (
                     <p role="alert" className="mt-2 text-xs text-red-600">
                       {error}

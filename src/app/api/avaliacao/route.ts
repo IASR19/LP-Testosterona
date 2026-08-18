@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { resolveIncomeIcp } from "@/content/apresentacao";
+import {
+  isValidBrazilianPhone,
+  nationalPhoneDigits,
+} from "@/lib/form/formatters";
 import { UTM_KEYS, type UtmKey } from "@/lib/utm";
 
 const GRAPEGEST_URL = "https://www.grapegest.com.br/api/webhooks/leads";
@@ -30,10 +34,6 @@ const requiredStringFields = [
 
 function isFilledString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
-}
-
-function digitsOnly(value: string) {
-  return value.replace(/\D/g, "");
 }
 
 function validatePayload(payload: EvaluationLeadPayload) {
@@ -75,6 +75,16 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!isValidBrazilianPhone(payload.whatsapp as string)) {
+    return NextResponse.json(
+      {
+        message: "Informe um WhatsApp válido com DDD e 9 dígitos.",
+        missing: ["whatsapp"],
+      },
+      { status: 400 },
+    );
+  }
+
   const token = process.env.GRAPEGEST_TOKEN;
 
   if (!token) {
@@ -97,7 +107,7 @@ export async function POST(request: Request) {
 
   const grapegestPayload: Record<string, string> = {
     name: (payload.nome as string).trim(),
-    phone: digitsOnly((payload.whatsapp as string).trim()),
+    phone: nationalPhoneDigits((payload.whatsapp as string).trim()),
     localizacao: (payload.cidade as string).trim(),
     dor_principal: situacoes.join(", "),
     valor_disposto: icp

@@ -1,7 +1,8 @@
 import {
+  BRAZIL_PHONE_PLACEHOLDER,
+  brazilianPhoneValidationError,
   formatBrazilianPhone,
   formatPersonName,
-  isValidBrazilianPhone,
   isValidEmail,
   normalizeSpaces,
 } from "@/lib/form/formatters";
@@ -55,17 +56,14 @@ export const chatSteps: ChatStep[] = [
   {
     id: "phone",
     messages: (answers) => [
-      `${firstName(answers)}, me passa seu WhatsApp com DDD?`,
+      `${firstName(answers)}, me passa seu WhatsApp. O +55 já está selecionado; coloque o DDD e o número.`,
     ],
     input: {
       kind: "phone",
       field: "phone",
-      placeholder: "Digite o seu telefone com DDD",
+      placeholder: BRAZIL_PHONE_PLACEHOLDER,
       transform: formatBrazilianPhone,
-      validate: (value) =>
-        isValidBrazilianPhone(value)
-          ? null
-          : "Esse número não parece estar completo. Digite seu telefone com DDD (ex.: 35999999999).",
+      validate: brazilianPhoneValidationError,
     },
     next: nextAfterKnown,
   },

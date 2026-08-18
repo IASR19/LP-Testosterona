@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { resolveIncomeIcp } from "@/content/apresentacao";
+import {
+  isValidBrazilianPhone,
+  nationalPhoneDigits,
+} from "@/lib/form/formatters";
 
 const GRAPEGEST_URL = "https://www.grapegest.com.br/api/webhooks/leads";
 
@@ -54,10 +58,6 @@ function isCampaignSlug(value: unknown): value is CampaignSlug {
   );
 }
 
-function digitsOnly(value: string) {
-  return value.replace(/\D/g, "");
-}
-
 function validatePayload(payload: LeadPayload) {
   const missing: string[] = [];
 
@@ -98,6 +98,16 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!isValidBrazilianPhone(payload.phone as string)) {
+    return NextResponse.json(
+      {
+        message: "Informe um WhatsApp válido com DDD e 9 dígitos.",
+        missing: ["phone"],
+      },
+      { status: 400 },
+    );
+  }
+
   const token = process.env.GRAPEGEST_TOKEN;
 
   if (!token) {
@@ -112,7 +122,7 @@ export async function POST(request: Request) {
   }
 
   const campaign = payload.campaign as CampaignSlug;
-  const phone = digitsOnly((payload.phone as string).trim());
+  const phone = nationalPhoneDigits((payload.phone as string).trim());
 
   const grapegestPayload: Record<string, string> = {
     name: (payload.name as string).trim(),
