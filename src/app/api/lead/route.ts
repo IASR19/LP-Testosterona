@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { resolveIncomeIcp } from "@/content/apresentacao";
+
 const GRAPEGEST_URL = "https://www.grapegest.com.br/api/webhooks/leads";
 
 const CAMPAIGN_SOURCES = {
@@ -20,6 +22,7 @@ type LeadPayload = {
   symptom?: unknown;
   wantsConsultation?: unknown;
   convenio?: unknown;
+  renda?: unknown;
   utm_source?: unknown;
   utm_medium?: unknown;
   utm_campaign?: unknown;
@@ -136,6 +139,21 @@ export async function POST(request: Request) {
 
   if (isFilledString(payload.convenio)) {
     grapegestPayload.convenio = payload.convenio.trim();
+  }
+
+  if (isFilledString(payload.renda)) {
+    const parcela = payload.renda.trim();
+    const icp = resolveIncomeIcp(parcela);
+
+    grapegestPayload.parcela_mensal = parcela;
+    grapegestPayload.valor_disposto = icp
+      ? `${parcela} | renda est. ${icp.rendaEstimada} | ${icp.leitura}`
+      : parcela;
+
+    if (icp) {
+      grapegestPayload.renda_estimada = icp.rendaEstimada;
+      grapegestPayload.icp = icp.leitura;
+    }
   }
 
   for (const field of optionalUtmFields) {

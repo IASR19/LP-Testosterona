@@ -4,7 +4,7 @@ import { emptyAnswers, type Campaign } from "@/content/types";
 
 export const endometrioseCampaign: Campaign = {
   slug: "endometriose",
-  finish: "ebook",
+  finish: "whatsapp-group",
   config: leadMagnetConfig,
   siteMeta,
   chatSteps,

@@ -114,6 +114,11 @@ export const incomeOptions = [
   "Acima de R$ 6.000",
 ] as const;
 
+export const incomeChoices = incomeOptions.map((option) => ({
+  label: option,
+  value: option,
+}));
+
 export type IncomeOption = (typeof incomeOptions)[number];
 
 export const incomeIcpByOption: Record<

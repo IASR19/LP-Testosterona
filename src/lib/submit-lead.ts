@@ -20,6 +20,7 @@ export async function submitLead(
       symptom: answers.symptom,
       wantsConsultation: answers.wantsConsultation,
       convenio: answers.convenio,
+      renda: answers.renda,
       ...readUtmsFromWindow(),
     }),
     keepalive: true,

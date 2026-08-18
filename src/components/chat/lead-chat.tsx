@@ -9,6 +9,7 @@ import { ChatInput } from "@/components/chat/chat-input";
 import { ChoiceButtons } from "@/components/chat/choice-buttons";
 import { EbookFinalScreen } from "@/components/final/ebook-final-screen";
 import { WhatsAppFinalScreen } from "@/components/final/whatsapp-final-screen";
+import { WhatsAppGroupFinalScreen } from "@/components/final/whatsapp-group-final-screen";
 import {
   getStepById,
   resolveMessages,
@@ -219,6 +220,9 @@ export function LeadChat() {
   if (finished) {
     if (finish === "whatsapp") {
       return <WhatsAppFinalScreen answers={answers} />;
+    }
+    if (finish === "whatsapp-group") {
+      return <WhatsAppGroupFinalScreen answers={answers} />;
     }
     return <EbookFinalScreen answers={answers} />;
   }

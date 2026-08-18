@@ -7,6 +7,7 @@ export type LeadAnswers = {
   symptom: string;
   wantsConsultation: string;
   convenio: string;
+  renda: string;
 };
 
 export type ChoiceOption = {
@@ -60,7 +61,7 @@ export type SiteMeta = {
 
 export type Campaign = {
   slug: "endometriose" | "testosterona" | "apresentacao";
-  finish: "ebook" | "whatsapp";
+  finish: "ebook" | "whatsapp" | "whatsapp-group";
   config: LeadMagnetConfig;
   siteMeta: SiteMeta;
   chatSteps: ChatStep[];
@@ -76,6 +77,7 @@ export const emptyAnswers: LeadAnswers = {
   symptom: "",
   wantsConsultation: "",
   convenio: "",
+  renda: "",
 };
 
 export function getStepById(steps: ChatStep[], id: string) {

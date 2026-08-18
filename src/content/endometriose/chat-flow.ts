@@ -5,6 +5,7 @@ import {
   isValidEmail,
   normalizeSpaces,
 } from "@/lib/form/formatters";
+import { incomeChoices, incomeQuestion } from "@/content/apresentacao";
 import type { ChatStep } from "@/content/types";
 
 export const chatSteps: ChatStep[] = [
@@ -125,7 +126,7 @@ export const chatSteps: ChatStep[] = [
   },
   {
     id: "profession",
-    messages: ["Perfeito! Última pergunta: qual é a sua profissão?"],
+    messages: ["Perfeito! Qual é a sua profissão?"],
     input: {
       kind: "text",
       field: "profession",
@@ -134,20 +135,30 @@ export const chatSteps: ChatStep[] = [
       validate: (value) =>
         normalizeSpaces(value) ? null : "Informe a sua profissão.",
     },
+    next: "income",
+  },
+  {
+    id: "income",
+    messages: [incomeQuestion],
+    input: {
+      kind: "choice",
+      field: "renda",
+      choices: incomeChoices,
+    },
     next: (answers) =>
       answers.wantsConsultation === "Sim" ? "closing-yes" : "closing-no",
   },
   {
     id: "closing-yes",
     messages: [
-      "Perfeito! 🤎 Seu guia está pronto. Cuidar da sua saúde começa com informação e o acompanhamento certo.",
+      "Perfeito! 🤎 Vou te levar agora para o grupo no WhatsApp, onde você baixa o guia. Cuidar da sua saúde começa com informação e o acompanhamento certo.",
     ],
     autoAdvance: true,
   },
   {
     id: "closing-no",
     messages: [
-      "Sem problemas! Eu vou te mandar o guia agora e, se quiser, posso te avisar quando abrirmos uma turma ao vivo para tratarmos sobre o assunto. Pode ser?",
+      "Sem problemas! Vou te levar agora para o grupo no WhatsApp, onde você baixa o guia. Se quiser, posso te avisar quando abrirmos uma turma ao vivo para tratarmos sobre o assunto. Pode ser?",
     ],
     autoAdvance: true,
   },
