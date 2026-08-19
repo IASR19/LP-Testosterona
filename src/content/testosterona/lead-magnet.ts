@@ -10,7 +10,7 @@ export const leadMagnetConfig: LeadMagnetConfig = {
   ebookViewUrl:
     "https://drive.google.com/file/d/1gE6YI3tLFKtqFOSnIIZ76gZPru7ZNplT/view?usp=sharing",
   whatsappGroupUrl:
-    "https://chat.whatsapp.com/BDjX9xhQObZ8Au6fxnWjnN?s=cl&p=a&ilr=0",
+    "https://chat.whatsapp.com/FbzwZoB04QyDs0MmoOw4Lf?s=cl&p=a&ilr=0",
   redirectDelayMs: 1200,
   avatarSrc: "/images/testosterona/chat-avatar.png",
   avatarObjectPosition: "center 12%",
