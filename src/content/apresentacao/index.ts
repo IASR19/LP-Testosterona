@@ -196,10 +196,6 @@ export const initialEvaluationAnswers: EvaluationAnswers = {
 };
 
 export function buildWhatsAppHref(answers: EvaluationAnswers) {
-  const situacoes =
-    answers.situacoes.length > 0 ? answers.situacoes.join(", ") : "—";
-  const icp = resolveIncomeIcp(answers.renda);
-
   const text = [
     "Olá! Vim pela apresentação da Grape Clinic e gostaria de agendar uma avaliação.",
     "",
@@ -207,10 +203,6 @@ export function buildWhatsAppHref(answers: EvaluationAnswers) {
     `WhatsApp: ${answers.whatsapp}`,
     `Cidade: ${answers.cidade}`,
     `Profissão: ${answers.profissao || "—"}`,
-    `Situações: ${situacoes}`,
-    `Investimento mensal: ${answers.renda}`,
-    `Renda estimada: ${icp?.rendaEstimada ?? "—"}`,
-    `ICP: ${icp?.leitura ?? "—"}`,
   ].join("\n");
 
   return `https://api.whatsapp.com/send?phone=${apresentacaoContent.whatsappPhone}&text=${encodeURIComponent(text)}`;

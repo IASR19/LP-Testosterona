@@ -16,8 +16,6 @@ function buildHandoffHref(answers: LeadAnswers) {
     `WhatsApp: ${answers.phone}`,
     `E-mail: ${answers.email}`,
     `Profissão: ${answers.profession || "—"}`,
-    `Situação: ${answers.symptom || "—"}`,
-    `Convênio: ${answers.convenio || "—"}`,
   ].join("\n");
 
   return `https://api.whatsapp.com/send?phone=${apresentacaoContent.whatsappPhone}&text=${encodeURIComponent(text)}`;
